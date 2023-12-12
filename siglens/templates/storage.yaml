@@ -1,0 +1,17 @@
+{{- if not .Values.siglens.storage.defaultClass -}}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Chart.Name }}-storage-class
+  namespace: {{ .Release.Namespace }}
+{{ if .Values.siglens.storage.awsEBS }}
+provisioner: kubernetes.io/aws-ebs
+parameters: 
+{{ toYaml .Values.siglens.storage.awsEBS.parameters | indent 2 }}
+{{ else if .Values.siglens.storage.local }}
+provisioner: kubernetes.io/no-provisioner
+{{ end }}
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+{{ end }}

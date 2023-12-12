@@ -1,0 +1,20 @@
+{{- if .Values.siglens.ingest.service.serviceType -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "siglens.fullname" . }}-ingest-svc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{ include "siglens-ingest-server.labels" . | nindent 4 }}
+  annotations:
+    {{ toYaml .Values.siglens.ingest.service.annotations | nindent 4 }}
+spec:
+  type: {{ .Values.siglens.ingest.service.serviceType }}
+  ports:
+    - port: {{ .Values.siglens.ingest.service.port }}
+      targetPort: ingestport
+      protocol: TCP
+      name: ingest-http
+  selector:
+    {{- include "siglens-ingest-server.selectorLabels" . | nindent 4 -}}
+{{- end -}}

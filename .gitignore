@@ -1,0 +1,5 @@
+*.tgz
+
+*.DS_Store
+
+siglens/playground.yaml

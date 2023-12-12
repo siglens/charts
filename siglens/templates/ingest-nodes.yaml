@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+    name: {{ include "siglens.fullname" . }}-ingest-server
+    namespace: {{ .Release.Namespace }}
+    labels:
+        {{ include "siglens-ingest-server.labels" . | nindent 6 }}
+spec:
+  selector:
+    matchLabels:
+      {{ include "siglens-ingest-server.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "siglens.fullname" . }}-ingest-svc
+  replicas: {{ .Values.siglens.ingestReplicas }}
+  podManagementPolicy: "Parallel"
+  template:
+    metadata:
+      {{ with .Values.podAnnotations }}
+      annotations:
+        {{ toYaml . | nindent 8 }}
+      {{ end }}
+      labels:
+        {{ include "siglens-ingest-server.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- $licenseName := include "siglens-license.name" . -}}
+      {{ with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml . | nindent 8 }}
+      {{ end }}
+      serviceAccountName: {{ include "siglens.serviceAccountName" . }}
+      securityContext:
+        {{ toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{ toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.siglens.image.repository }}:{{ .Values.siglens.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.siglens.image.pullPolicy }}
+          command: ["./siglens", "--config", "server.yaml"]
+          ports:
+            - name: ingestport
+              containerPort: {{ .Values.siglens.configs.ingestPort }}
+              protocol: TCP
+          volumeMounts:
+          {{ if $licenseName }}
+            - name: {{ .Chart.Name }}-license
+              mountPath: /siglens/{{ $licenseName }}
+              subPath: {{ $licenseName }}
+          {{ end }}
+            - name: {{ .Chart.Name }}-volume-claim
+              mountPath: /siglens/data
+            - name: {{ .Chart.Name }}-ingest-config
+              mountPath: /siglens/server.yaml
+              subPath: server.yaml
+          resources:
+            {{ toYaml .Values.siglens.ingest.resources | nindent 12 }}
+      terminationGracePeriodSeconds: 1800 # Purposely set to 30 minutes to avoid data loss on s3 flush
+      volumes:
+        - name: {{ .Chart.Name }}-ingest-config
+          configMap:
+            name: {{ .Chart.Name }}-ingest-config
+            items:
+            - key: server.yaml
+              path: server.yaml
+      {{ if $licenseName }}
+        - name: {{ .Chart.Name }}-license
+          configMap:
+            name: {{ .Chart.Name }}-license
+            items:
+            - key: {{ $licenseName }}
+              path: {{ $licenseName }}
+      {{ end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ .Chart.Name }}-volume-claim
+      namespace: {{ .Release.Namespace }}
+    spec:
+      {{ include "siglens.storageClass" . | nindent 6 }}
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          {{ include "siglens-pvc.size" . | nindent 10 }}
