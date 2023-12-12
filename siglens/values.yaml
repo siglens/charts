@@ -3,9 +3,9 @@ siglens:
   ingestReplicas: 1
   queryReplicas: 1
   image:
-    repository: https://hub.docker.com/repository/docker/siglens/siglens
+    repository: public.ecr.aws/l3t9n5v5/sigscalr
     pullPolicy: Always
-    tag: 0.1.2
+    tag: 1.1.31
   ingest:
     resources: {}
     service:
