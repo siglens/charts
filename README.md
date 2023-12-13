@@ -16,7 +16,7 @@ Please ensure that `helm` is installed.
 To install SigLens from source:
 ```bash
 git clone
-cd siglens
+cd charts/siglens
 helm install siglens .
 ```
 
