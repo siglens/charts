@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-server-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "siglens.labels" . | nindent 4 }}
+data:
+  server.yaml: |-
+    dataPath: /siglens/data/
+    {{ if .Values.logsExporter.enabled }} # make fluentd happy with returned es version
+    esVersion: "8.9.3"
+    {{ else }}
+    esVersion: "7.9.3"
+    {{ end }}
+    {{- toYaml .Values.siglens.configs | nindent 4 }}

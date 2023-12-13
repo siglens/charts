@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+    name: {{ include "siglens.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+    labels:
+        {{ include "siglens-server.labels" . | nindent 6 }}
+spec:
+  selector:
+    matchLabels:
+      {{ include "siglens-server.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "siglens.serviceAccountName" . }}
+  replicas: 1
+  template:
+    metadata:
+      {{ with .Values.podAnnotations }}
+      annotations:
+        {{ toYaml . | nindent 8 }}
+      {{ end }}
+      labels:
+        {{ include "siglens-server.selectorLabels" . | nindent 8 }}
+    spec:
+      {{ with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml . | nindent 8 }}
+      {{ end }}
+      serviceAccountName: {{ include "siglens.serviceAccountName" . }}
+      securityContext:
+        {{ toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{ toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.siglens.image.repository }}:{{ .Values.siglens.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.siglens.image.pullPolicy }}
+          command: ["./siglens", "--config", "server.yaml"]
+          startupProbe:
+            httpGet:
+              path: /api/health
+              port: queryport
+              scheme: HTTP
+            httpGet:
+              path: /api/health
+              port: ingestport
+              scheme: HTTP
+            failureThreshold: 30
+            periodSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: queryport
+              scheme: HTTP
+            httpGet:
+              path: /api/health
+              port: ingestport
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          ports:
+            - name: queryport
+              containerPort: {{ .Values.siglens.configs.queryPort }}
+              protocol: TCP
+            - name: ingestport
+              containerPort: {{ .Values.siglens.configs.ingestPort }}
+              protocol: TCP
+          volumeMounts:
+            - name: {{ .Chart.Name }}-volume-claim
+              mountPath: /siglens/data
+            - name: {{ .Chart.Name }}-server-config
+              mountPath: /siglens/server.yaml
+              subPath: server.yaml
+          resources:
+            {{ toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: {{ .Chart.Name }}-server-config
+        configMap:
+          name: {{ .Chart.Name }}-server-config
+          items:
+          - key: server.yaml
+            path: server.yaml
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ .Chart.Name }}-volume-claim
+      namespace: {{ .Release.Namespace }}
+    spec:
+      {{ include "siglens.storageClass" . | nindent 6 }}
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          {{ include "siglens-pvc.size" . | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "siglens.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{ include "siglens-server.labels" . | nindent 4 }}
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.siglens.configs.ingestPort }}
+      targetPort: ingestport
+      protocol: TCP
+      name: ingestport
+    - port: {{ .Values.siglens.configs.queryPort }}
+      targetPort: queryport
+      protocol: TCP
+      name: queryport
+  selector:
+    {{ include "siglens-server.selectorLabels" . | nindent 4 }}
