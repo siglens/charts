@@ -4,7 +4,7 @@ siglens:
   image:
     repository: siglens/siglens
     pullPolicy: Always
-    tag: 0.1.2
+    tag: latest
   ingest:
     service:
       serviceType: "ClusterIP"
@@ -13,12 +13,12 @@ siglens:
   query:
     service:
       serviceType: "ClusterIP"
-      port: 8000
+      port: 5122
       annotations: {}
   
   configs:
     ingestPort: 8081 # port used for siglens ingestion servers
-    queryPort: 8000 # port used for siglens ui webserver
+    queryPort: 5122 # port used for siglens ui webserver
     queryNode: true
     ingestNode: true
 
