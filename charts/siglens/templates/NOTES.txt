@@ -15,9 +15,9 @@ Forward local port 8081 to the ingest service using:
 {{- if eq .Values.siglens.query.service.serviceType "ClusterIP" }}
 
 UI is enabled with a ClusterIP service
-Forward local port 8000 to the UI / query service using: 
-  $ kubectl port-forward svc/{{ include "siglens.fullname" . }}-query-svc 8000:{{ .Values.siglens.query.service.port }}
+Forward local port 5122 to the UI / query service using: 
+  $ kubectl port-forward svc/{{ include "siglens.fullname" . }}-query-svc 5122:{{ .Values.siglens.query.service.port }}
 
 Then, access the UI in a browser with:
-  $ http://localhost:8000
+  $ http://localhost:5122
 {{- end -}}
