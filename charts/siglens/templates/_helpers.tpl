@@ -135,6 +135,26 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+SigLens Metrics Otel Collector  labels
+*/}}
+{{- define "siglens-metrics-otel-collector.labels" -}}
+helm.sh/chart: {{ include "siglens.chart" . }}
+{{ include "siglens-metrics-otel-collector.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+SigLens Metrics Otel Collector Selector labels
+*/}}
+{{- define "siglens-metrics-otel-collector.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "siglens.name" . }}-ui
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
 SigLens PVC storage size
 */}}
 {{- define "siglens-pvc.size" -}}

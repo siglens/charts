@@ -63,6 +63,9 @@ spec:
             - name: ingestport
               containerPort: {{ .Values.siglens.configs.ingestPort }}
               protocol: TCP
+            - name: metricsport
+              containerPort: {{ .Values.siglens.configs.metricsPort }}
+              protocol: TCP
           volumeMounts:
             - name: {{ .Chart.Name }}-volume-claim
               mountPath: /siglens/data
