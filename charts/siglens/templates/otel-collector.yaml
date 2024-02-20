@@ -1,0 +1,80 @@
+{{- if .Values.otelCollector.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "siglens.fullname" . }}-metrics-otel-collector
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "siglens-metrics-otel-collector.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "siglens-metrics-otel-collector.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "siglens-metrics-otel-collector.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "siglens.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-otel-collector
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.otelCollector.image.repository }}:{{ .Values.otelCollector.image.tag }}"
+          imagePullPolicy: {{ .Values.otelCollector.image.pullPolicy }}
+          args:
+            - --config=/siglens/ssmetrics-otel-collector-config.yaml
+          ports:
+            - containerPort: {{- toYaml .Values.siglens.otel.service.port | nindent 16}}
+          volumeMounts:
+            - mountPath: /siglens
+              name: ocfg
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: ocfg
+          configMap:
+            name: {{ .Chart.Name }}-metrics-otel-collector-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-metrics-otel-collector-config
+  labels:
+    {{- include "siglens-metrics-otel-collector.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace }}
+data:
+  ssmetrics-otel-collector-config.yaml: |
+    receivers:
+      prometheus:
+        config:
+          scrape_configs:
+            - job_name: 'siglens-metrics'
+              scrape_interval: 60s
+              static_configs:
+                - targets: ['{{ include "siglens.fullname" . }}-ingest-svc:{{ .Values.siglens.configs.metricsPort }}']
+    processors:
+      batch:
+    exporters:
+      logging:
+        loglevel: debug
+      prometheusremotewrite:
+        endpoint: 'http://{{ include "siglens.fullname" . }}-ingest-svc:{{ .Values.siglens.configs.ingestPort }}/promql/api/v1/write'
+    service:
+      pipelines:
+        metrics:
+          receivers: [prometheus]
+          processors: [batch]
+          exporters: [prometheusremotewrite]
+{{ end }}

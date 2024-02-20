@@ -15,10 +15,16 @@ siglens:
       serviceType: "ClusterIP"
       port: 5122
       annotations: {}
+  otel:
+    service:
+      serviceType: "ClusterIP"
+      port: 4318
+      annotations: {}
   
   configs:
     ingestPort: 8081 # port used for siglens ingestion servers
     queryPort: 5122 # port used for siglens ui webserver
+    metricsPort: 2222
     queryNode: true
     ingestNode: true
 
@@ -48,6 +54,14 @@ logsExporter:
     pullPolicy: IfNotPresent
     tag: v1.14-debian-elasticsearch7-1
 
+otelCollector:
+  # opentelemetry collector to collect internal metrics from siglens
+  enabled: true
+  image:
+    repository: otel/opentelemetry-collector
+    pullPolicy: IfNotPresent
+    tag: latest
+  
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

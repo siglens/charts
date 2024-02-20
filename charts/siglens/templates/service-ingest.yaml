@@ -15,6 +15,10 @@ spec:
       targetPort: ingestport
       protocol: TCP
       name: ingest-http
+    - port: {{ .Values.siglens.configs.metricsPort }}
+      targetPort: metricsport
+      protocol: TCP
+      name: metrics-http
   selector:
     {{- include "siglens-server.selectorLabels" . | nindent 4 -}}
 {{- end -}}
