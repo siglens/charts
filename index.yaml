@@ -3,6 +3,21 @@ entries:
   siglens:
   - apiVersion: v2
     appVersion: latest
+    created: "2024-02-20T16:24:27.544394004Z"
+    description: A Helm chart for a SigLens Kubernetes deployment with logs & events
+      exporting
+    digest: 7848fb80e2034952eef6762ada8e99ab00055235ea9d47c9b143457b951640fd
+    maintainers:
+    - email: info@siglens.com
+      name: siglens
+      url: https://siglens.com
+    name: siglens
+    type: application
+    urls:
+    - https://github.com/siglens/charts/releases/download/siglens-0.1.2/siglens-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: latest
     created: "2024-02-08T18:51:35.858229791Z"
     description: A Helm chart for a SigLens Kubernetes deployment with logs & events
       exporting
@@ -31,4 +46,4 @@ entries:
     urls:
     - https://github.com/siglens/charts/releases/download/siglens-0.1.0/siglens-0.1.0.tgz
     version: 0.1.0
-generated: "2024-02-08T18:51:35.858243687Z"
+generated: "2024-02-20T16:24:27.544412068Z"
