@@ -1,0 +1,37 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: {{ .Values.namespace }}
+  annotations:
+    cert-manager.io/issuer: "letsencrypt"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - {{ .Values.queryHost }}
+    - {{ .Values.ingestHost }}
+    secretName: ingress-tls
+  rules:
+  - host: {{ .Values.queryHost }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-query-service
+            port:
+              number: {{ .Values.config.queryPort }}
+  - host: {{ .Values.ingestHost }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-ingest-service
+            port:
+              number: {{ .Values.config.ingestPort }}

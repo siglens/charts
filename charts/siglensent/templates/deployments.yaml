@@ -1,0 +1,117 @@
+{{- define "siglens.deployment" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .appName }}-deployment
+  namespace: {{ .namespace }}
+spec:
+  replicas: {{ .numReplicas }}
+  selector:
+    matchLabels:
+      app: {{ .appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .appName }}
+    spec:
+      serviceAccountName: {{ .serviceAccountName }}
+      initContainers:
+      - name: volume-permissions
+        image: busybox
+        # Set ownership of the /siglens/data directory. This is where EBS is
+        # mounted and where siglens stores the ingested data. Without setting
+        # ownership here, the pod fails to start up because it doesn't have
+        # permissions to make subdirectories of /siglens/data.
+        command: ['sh', '-c', 'chown -R 1000:1000 /siglens/data']
+        volumeMounts:
+        - name: data-volume
+          mountPath: /siglens/data
+      {{- if .imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ .imagePullSecret }}
+      {{- end }}
+      containers:
+      - name: {{ .appName}}-container
+        image: {{ .image }}
+        imagePullPolicy: {{ .imagePullPolicy }}
+        {{- if .enterprise }}
+        command: ["./sigscalr"]
+        {{ else }}
+        command: ["./siglens"]
+        {{- end }}
+        args: ["--config", "/config/server.yaml"]
+        ports:
+        {{- range .ports }}
+        - containerPort: {{ . }}
+        {{- end }}
+        volumeMounts:
+        - mountPath: /siglens/data # The docker image specifies siglens/ as the workdir
+          name: data-volume
+        - mountPath: /config
+          name: {{ .appName }}-config
+        - mountPath: /license
+          name: license-volume
+        - mountPath: /certs
+          name: cert-volume
+      volumes:
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: ebs-pvc
+      - name: {{ .appName }}-config
+        configMap:
+          name: {{ .Release.Name}}-{{ .appName }}-configmap
+      - name: license-volume
+        secret:
+          secretName: {{ $.Release.Name }}-license-secret
+          items:
+          - key: license
+            path: license.txt
+      - name: cert-volume
+        secret:
+          secretName: ingress-tls
+{{- end -}}
+
+{{ if .Values.multinode.enabled }}
+  {{- $ingestDeployment := dict
+    "Release"         .Release
+    "namespace"       .Values.namespace
+    "appName"         "ingest"
+    "ports"           (list .Values.config.ingestPort)
+    "numReplicas"     .Values.multinode.ingestReplicas
+    "serviceAccountName" ( printf "%s-%s" .Release.Name "service-account" )
+    "image"           .Values.image
+    "imagePullPolicy" .Values.imagePullPolicy
+    "imagePullSecret" ( eq "" .Values.dockerConfigBase64 | ternary "" (printf "%s-registry-secret" .Release.Name) )
+    "enterprise"      .Values.enterprise
+  }}
+  {{- $queryDeployment := dict
+    "Release"         .Release
+    "namespace"       .Values.namespace
+    "appName"         "query"
+    "ports"           (list .Values.config.queryPort)
+    "numReplicas"     .Values.multinode.queryReplicas
+    "serviceAccountName" ( printf "%s-%s" .Release.Name "service-account" )
+    "image"           .Values.image
+    "imagePullPolicy" .Values.imagePullPolicy
+    "imagePullSecret" ( eq "" .Values.dockerConfigBase64 | ternary "" (printf "%s-registry-secret" .Release.Name) )
+    "enterprise"      .Values.enterprise
+  }}
+
+  {{ include "siglens.deployment" $ingestDeployment | indent 0 }}
+  {{ printf "\n---\n" }}
+  {{ include "siglens.deployment" $queryDeployment | indent 0 }}
+{{ else }}
+  {{- $deployment := dict
+    "Release"         .Release
+    "namespace"       .Values.namespace
+    "appName"         "ingest-and-query"
+    "ports"           (list .Values.config.ingestPort .Values.config.queryPort)
+    "numReplicas"     1
+    "serviceAccountName" ( printf "%s-%s" .Release.Name "service-account" )
+    "image"           .Values.image
+    "imagePullPolicy" .Values.imagePullPolicy
+    "imagePullSecret" ( eq "" .Values.dockerConfigBase64 | ternary "" (printf "%s-registry-secret" .Release.Name) )
+    "enterprise"      .Values.enterprise
+  }}
+  {{- include "siglens.deployment" $deployment -}}
+{{ end }}
