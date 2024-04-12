@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app: {{ .appName }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ .serviceAccountName }}
       initContainers:
@@ -74,6 +76,8 @@ spec:
 {{ if .Values.multinode.enabled }}
   {{- $ingestDeployment := dict
     "Release"         .Release
+    "Template"        .Template
+    "Values"          .Values
     "namespace"       .Values.namespace
     "appName"         "ingest"
     "ports"           (list .Values.config.ingestPort)
@@ -86,6 +90,8 @@ spec:
   }}
   {{- $queryDeployment := dict
     "Release"         .Release
+    "Template"        .Template
+    "Values"          .Values
     "namespace"       .Values.namespace
     "appName"         "query"
     "ports"           (list .Values.config.queryPort)
@@ -103,6 +109,8 @@ spec:
 {{ else }}
   {{- $deployment := dict
     "Release"         .Release
+    "Template"        .Template
+    "Values"          .Values
     "namespace"       .Values.namespace
     "appName"         "ingest-and-query"
     "ports"           (list .Values.config.ingestPort .Values.config.queryPort)
