@@ -1,16 +1,16 @@
-namespace: siglens
+namespace: siglensent
 
 # Overrides for the ingress-nginx subchart.
 ingress-nginx:
-  namespaceOverride: siglens
+  namespaceOverride: siglensent
 
 # Overrides for the cert-manager subchart.
 cert-manager:
-  namespace: siglens
+  namespace: siglensent
 
 # Overrides for the etcd subchart.
 etcd:
-  namespace: siglens
+  namespace: siglensent
   replicaCount: 3
   auth:
     rbac:
