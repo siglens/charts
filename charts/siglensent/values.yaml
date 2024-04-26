@@ -41,7 +41,7 @@ multinode:
 # For multinode, these are the credentials pods will use to connect to etcd.
 siglensEtcdOverrides:
   username: root
-  password: "" # If empty, will use etcd.auth.rbac.rootPassword
+  password: ""  # If empty, will use etcd.auth.rbac.rootPassword
 
 # If TLS is enabled, these settings are used to gererate a certificate.
 acme:
@@ -51,10 +51,10 @@ acme:
 queryHost: "siglens.example.com"
 ingestHost: "ingest.siglens.example.com"
 
-ebs: # Used for sharing data between pods on the same node.
+ebs:  # Used for sharing data between pods on the same node.
   storageSize: 20Gi
 
-efs: # Used for etcd data storage in a multinode setup.
+efs:  # Used for etcd data storage in a multinode setup.
   fileSystemId: "fs-1234567890abcdef1"
   storageSize: 20Gi
 
@@ -85,10 +85,10 @@ config:
   queryPort: 5122
 
   # Location for storing local node data
-  dataPath : data/
+  dataPath: data/
 
   # field name to use as a timestamp key
-  timestampKey : timestamp
+  timestampKey: timestamp
 
   # Where the license is stored within the container
   licenseKeyPath: /license/license.txt
