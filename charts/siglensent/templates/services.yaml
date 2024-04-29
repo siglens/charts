@@ -1,0 +1,32 @@
+{{- define "siglens.service" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .name }}
+  namespace: {{ .namespace }}
+spec:
+  type: NodePort
+  selector:
+    app: {{ .appName }}
+  ports:
+    - protocol: TCP
+      port: {{ .port }}
+      targetPort: {{ .port }}
+{{- end }}
+
+{{- $ingestService := dict
+  "name"      (printf "%s-ingest-service" .Release.Name)
+  "namespace" .Values.namespace
+  "appName"   (.Values.multinode.enabled | ternary "ingest" "ingest-and-query")
+  "port"      .Values.config.ingestPort
+}}
+{{- $queryService := dict
+  "name"      (printf "%s-query-service" .Release.Name)
+  "namespace" .Values.namespace
+  "appName"   (.Values.multinode.enabled | ternary "query" "ingest-and-query")
+  "port"      .Values.config.queryPort
+}}
+
+{{ include "siglens.service" $ingestService }}
+---
+{{ include "siglens.service" $queryService }}

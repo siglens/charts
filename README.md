@@ -86,3 +86,27 @@ siglens:
   configs:
     license: abc.txt
 ```
+
+# Siglensent
+## Installation
+Create a custom-values.yaml file where you'll supply your license and other
+configurations. By default the chart installs into the `siglens` namespace;
+you can change this in your custom-values.yaml, or you can first create that
+namespace with `kubectl create namespace siglens`. Then install with:
+```
+helm repo add siglens-repo https://siglens.github.io/charts
+helm install siglensent siglens-repo/siglensent -f custom-values.yaml --namespace siglens
+```
+
+If TLS is enabled, you'll need to update your DNS to point to the ingress
+controller. You can find the load balancer with:
+```
+kubectl get svc --all-namespaces
+```
+Look for the service with the `ingress-nginx-controller` name in the namespace
+you installed into. Then make a CNAME record in your DNS to point to the load
+balancer.
+
+**Note:** If you uninstall and reinstall the chart, you'll need to update your
+DNS again. But if you do a `helm upgrade` instead, the ingress controller will
+persist, so you won't have to update your DNS.

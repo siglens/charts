@@ -1,0 +1,97 @@
+namespace: siglensent
+
+# Overrides for the ingress-nginx subchart.
+ingress-nginx:
+  namespaceOverride: siglensent
+
+# Overrides for the cert-manager subchart.
+cert-manager:
+  namespace: siglensent
+
+# Overrides for the etcd subchart.
+etcd:
+  namespace: siglensent
+  replicaCount: 3
+  auth:
+    rbac:
+      rootPassword: dontkeepthispassword
+
+# Used for pulling the SigLens image from a private registry. Not needed for
+# public registries. If you're using a private registry, set this to the output
+# of `cat ~/.docker/config.json | base64`.
+dockerConfigBase64: ""
+
+image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/siglens:latest
+imagePullPolicy: Always
+
+# If you're using an enterprise image, set "enterprise" to true. Enterprise
+# images require a license. To specify your license, set "licenseBase64" to the
+# output of `cat /path/to/licenseKey.txt | base64`.
+enterprise: false
+licenseBase64: ""
+
+# Multinode sets up multiple ingest and query nodes. This is only available for
+# enterprise setups. Withoutu multinode, there will be just one pod, which
+# handles both ingest and query.
+multinode:
+  enabled: false
+  ingestReplicas: 2
+  queryReplicas: 2
+
+# For multinode, these are the credentials pods will use to connect to etcd.
+siglensEtcdOverrides:
+  username: root
+  password: ""  # If empty, will use etcd.auth.rbac.rootPassword
+
+# If TLS is enabled, these settings are used to gererate a certificate.
+acme:
+  useProductionCertificate: true
+  registrationEmail: "you@example.com"
+
+queryHost: "siglens.example.com"
+ingestHost: "ingest.siglens.example.com"
+
+ebs:  # Used for sharing data between pods on the same node.
+  storageSize: 20Gi
+
+efs:  # Used for etcd data storage in a multinode setup.
+  fileSystemId: "fs-1234567890abcdef1"
+  storageSize: 20Gi
+
+# Annotations for pod privileges. Needed for setups with S3 (which is required
+# for multinode) so the pods can read and write to S3.
+serviceAccountAnnotations:
+  # Example:
+  # eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/YourRole
+
+# You can add other configs here that siglens supports (e.g., from your
+# server.yaml used to run siglens locally)
+#
+# Note: Don't include any of the following keys even though you may have them
+# in your server.yaml; they are already set by the Helm chart if needed:
+# - isIngestNode
+# - isQueryNode
+# - etcd
+config:
+  tls:
+    enabled: true
+    certificatePath: /certs/tls.crt
+    privateKeyPath: /certs/tls.key
+
+  # Address port for SigLens ingestion server
+  ingestPort: 8081
+
+  # Address port for SigLens query server, including UI
+  queryPort: 5122
+
+  # Location for storing local node data
+  dataPath: data/
+
+  # field name to use as a timestamp key
+  timestampKey: timestamp
+
+  # Where the license is stored within the container
+  licenseKeyPath: /license/license.txt
+
+  # For ephemeral servers (docker, k8s) set this variable to unique container name to persist data across restarts
+  ssInstanceName: "siglens-pod"
