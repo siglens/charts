@@ -1,6 +1,6 @@
 # Default values for siglens.
 siglens:
-  
+
   image:
     repository: siglens/siglens
     pullPolicy: Always
@@ -20,10 +20,10 @@ siglens:
       serviceType: "ClusterIP"
       port: 4318
       annotations: {}
-  
+
   configs:
-    ingestPort: 8081 # port used for siglens ingestion servers
-    queryPort: 5122 # port used for siglens ui webserver
+    ingestPort: 8081  # port used for siglens ingestion servers
+    queryPort: 5122  # port used for siglens ui webserver
     metricsPort: 2222
     queryNode: true
     ingestNode: true
@@ -33,7 +33,7 @@ siglens:
     defaultClass: true
 
     # size of the volume the PVC will request
-    size: 10Gi 
+    size: 10Gi
 
 
 k8sExporter:
@@ -44,7 +44,7 @@ k8sExporter:
     pullPolicy: IfNotPresent
     tag: v0.11
   configs:
-    index: kubernetes-events # output index name for kubernetes events
+    index: kubernetes-events  # output index name for kubernetes events
 
 logsExporter:
   # Logs Exporter launches a fluentd daemonset that tails all container logs at /var/log/containers/*.log
@@ -61,7 +61,7 @@ otelCollector:
     repository: otel/opentelemetry-collector
     pullPolicy: IfNotPresent
     tag: latest
-  
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

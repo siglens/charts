@@ -28,4 +28,4 @@ jobs:
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
       - name: Run chart-testing (lint)
-        run: ct lint --target-branch ${{ github.head_ref }}
+        run: ct lint --target-branch ${{ github.head_ref }} --chart-dirs charts
