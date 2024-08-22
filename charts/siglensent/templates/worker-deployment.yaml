@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+  namespace: {{ .Values.global.namespace }}
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: worker-node
+  template:
+    metadata:
+      labels:
+        app: worker-node
+      annotations:
+        checksum/config: sha256-checksum-placeholder
+    spec:
+      serviceAccountName: {{ .Release.Name }}-service-account
+      initContainers:
+      - name: volume-permissions
+        image: busybox
+        command: ['sh', '-c', 'chown -R 1000:1000 /siglens/data']
+        volumeMounts:
+        - name: data-volume
+          mountPath: /siglens/data
+      containers:
+      - name: worker-container
+        image: {{ .Values.worker.deployment.image }}
+        imagePullPolicy: Always
+        command: ["/siglens/sigscalr"]
+        args: ["--config", "/config/server.yaml"]
+        ports:
+        - containerPort: 8081
+        volumeMounts:
+        - mountPath: /siglens/data
+          name: data-volume
+        - mountPath: /config
+          name: worker-config
+        - mountPath: /license
+          name: license-volume
+        - mountPath: /certs
+          name: cert-volume
+      volumes:
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: gcp-pd-pvc
+      - name: worker-config
+        configMap:
+          name: worker-configmap
+      - name: license-volume
+        secret:
+          secretName: {{ .Release.Name }}-license-secret
+          items:
+          - key: license
+            path: license.txt
+      - name: cert-volume
+        secret:
+          secretName: ingress-tls

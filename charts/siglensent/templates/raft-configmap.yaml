@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: raft-configmap
+  namespace: {{ .Values.global.namespace }}
+data:
+  server.yaml: |-
+    tls:
+      enabled: {{ .Values.config.tls.enabled }}
+      certificatePath: {{ .Values.config.tls.certificatePath }}
+      privateKeyPath: {{ .Values.config.tls.privateKeyPath }}
+    ingestPort: {{ .Values.config.ingestPort }}
+    queryPort: {{ .Values.config.queryPort }}
+    dataPath: {{ .Values.config.dataPath }}
+    timestampKey: {{ .Values.config.timestampKey }}
+    licenseKeyPath: {{ .Values.config.licenseKeyPath }} 
+    ssInstanceName: {{ .Values.config.raft.ssInstanceName }}
+    rbac:
+      provider: sqlite
+      dbname: db1
+    ingestNode: true
+    queryNode: true
+    etcd:
+      enabled: true
+      username: root
+      password: dontkeepthispassword
+      seedUrls:
+        - {{ printf "http://%s-etcd.%s.svc.cluster.local:2379" .Release.Name .Release.Namespace }}
+    raft:
+      enabled: true
+      raftNodes:
+{{- $namespace := .Release.Namespace }}
+{{- range $i := until (int .Values.raft.deployment.replicas) }}
+        - {{ printf "http://raft-deployment-%d.raft-service.%s.svc.cluster.local:2379" $i $namespace }}
+{{- end }}

@@ -1,25 +1,13 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: ebs-pvc
-  namespace: {{ .Values.namespace }}
+  name: gcp-pd-pvc
+  namespace: {{ .Values.global.namespace }}
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: ebs-sc
+  storageClassName: gcp-pd-standard-rwo
   resources:
     requests:
-      storage: {{ .Values.ebs.storageSize }}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: efs-pvc
-spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: efs-sc
-  resources:
-    requests:
-      storage: {{ .Values.efs.storageSize }}
-
+      storage: {{ .Values.pvc.size }}
+  

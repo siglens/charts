@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.global.namespace }}
   annotations:
     cert-manager.io/issuer: "letsencrypt"
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
@@ -13,7 +13,7 @@ spec:
   - hosts:
     - {{ .Values.queryHost }}
     - {{ .Values.ingestHost }}
-    secretName: ingress-tls
+    secretName: {{ .Values.ingress.tlsSecret }}
   rules:
   - host: {{ .Values.queryHost }}
     http:
@@ -22,7 +22,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: {{ .Release.Name }}-query-service
+            name: query-service
             port:
               number: {{ .Values.config.queryPort }}
   - host: {{ .Values.ingestHost }}
@@ -32,6 +32,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: {{ .Release.Name }}-ingest-service
+            name: ingest-service
             port:
               number: {{ .Values.config.ingestPort }}
