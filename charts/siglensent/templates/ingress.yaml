@@ -22,7 +22,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: query-service
+            name: {{ .Release.Name }}-query-service
             port:
               number: {{ .Values.config.queryPort }}
   - host: {{ .Values.ingestHost }}
@@ -32,6 +32,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: ingest-service
+            name: {{ .Release.Name }}-ingest-service
             port:
               number: {{ .Values.config.ingestPort }}

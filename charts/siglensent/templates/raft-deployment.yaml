@@ -4,6 +4,7 @@ metadata:
   name: raft-deployment
   namespace: {{ .Values.global.namespace }}
 spec:
+  serviceName: raft-service
   replicas: {{ .Values.raft.deployment.replicas }}
   volumeClaimTemplates:
   - metadata:
@@ -12,7 +13,7 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: 10Gi  # Adjust the storage size as necessary
+          storage: {{ .Values.raft.deployment.storage.size }}
   selector:
     matchLabels:
       app: raft-node
@@ -41,8 +42,8 @@ spec:
           - --config
           - /config/server.yaml
         ports:
-        - containerPort: 8081
-        - containerPort: 2379  # Raft port
+        - containerPort: {{ .Values.raft.deployment.ports.ingest }}
+        - containerPort: {{ .Values.raft.deployment.ports.raft }}  # Raft port
         volumeMounts:
         - mountPath: /siglens/data
           name: data-volume

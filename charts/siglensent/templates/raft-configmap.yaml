@@ -21,11 +21,12 @@ data:
     ingestNode: true
     queryNode: true
     etcd:
-      enabled: true
-      username: root
-      password: dontkeepthispassword
+      enabled: {{ .Values.etcd.enabled }}
+      username: {{ .Values.etcd.username }}
+      password: {{ .Values.etcd.password }}
       seedUrls:
         - {{ printf "http://%s-etcd.%s.svc.cluster.local:2379" .Release.Name .Release.Namespace }}
+    isRaftNode: true
     raft:
       enabled: true
       raftNodes:

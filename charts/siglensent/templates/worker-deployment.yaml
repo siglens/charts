@@ -4,7 +4,7 @@ metadata:
   name: worker-deployment
   namespace: {{ .Values.global.namespace }}
 spec:
-  replicas: 3
+  replicas: {{ .Values.worker.deployment.replicas }}
   selector:
     matchLabels:
       app: worker-node
@@ -30,7 +30,7 @@ spec:
         command: ["/siglens/sigscalr"]
         args: ["--config", "/config/server.yaml"]
         ports:
-        - containerPort: 8081
+        - containerPort: {{ .Values.worker.deployment.ports.ingest }}
         volumeMounts:
         - mountPath: /siglens/data
           name: data-volume

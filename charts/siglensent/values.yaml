@@ -14,16 +14,25 @@ ingestHost: ingest.siglens.example.com
 pvc:
   size: 20Gi
 
+etcd:
+  enabled: true
+  username: root
+  password: dontkeepthispassword
+
 storageClass:
   diskType: pd-standard
 
 ingestService:
   selector:
     app: worker-node
+  port: 8081
+  targetPort: 8081
 
 queryService:
   selector:
     app: worker-node
+  port: 5122
+  targetPort: 5122
 
 ingress:
   hosts:
@@ -36,6 +45,8 @@ acme:
   useProductionCertificate: true
   registrationEmail: "you@example.com"
 
+# images require a license. To specify your license, set "licenseBase64" to the
+# output of `cat /path/to/licenseKey.txt | base64`.
 secrets:
   licenseKey: ""
 
@@ -84,12 +95,23 @@ raft:
     replicas: 3 # Number of replicas for the Raft server
     image: public.ecr.aws/l3t9n5v5/siglens-enterprise:0.2.21-ent1
     imagePullPolicy: Always
+    ports:
+      ingest: 8081
+      raft: 2379
+    storage:
+      size: "10Gi"
 
 worker:
   deployment:
     replicas: 3 # Number of replicas for the Worker server
     image: public.ecr.aws/l3t9n5v5/siglens-enterprise:0.2.21-ent1
     imagePullPolicy: Always
+    ports:
+      ingest: 8081
 
+
+# Used for pulling the SigLens image from a private registry. Not needed for
+# public registries. If you're using a private registry, set this to the output
+# of `cat ~/.docker/config.json | base64`.
 registry:
   dockerConfigBase64: ""
