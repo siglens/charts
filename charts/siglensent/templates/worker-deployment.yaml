@@ -38,8 +38,10 @@ spec:
           name: worker-config
         - mountPath: /license
           name: license-volume
+        {{- if .Values.config.tls.enabled }}
         - mountPath: /certs
           name: cert-volume
+        {{- end }}
       volumes:
       - name: data-volume
         persistentVolumeClaim:
@@ -53,6 +55,8 @@ spec:
           items:
           - key: license
             path: license.txt
+        {{- if .Values.config.tls.enabled }}
       - name: cert-volume
         secret:
           secretName: {{ .Values.ingress.tlsSecret }}
+        {{- end }}
