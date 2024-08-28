@@ -32,15 +32,21 @@ spec:
         volumeMounts:
         - name: data-volume
           mountPath: /siglens/data
+      - name: setup-iptables
+        image: alpine
+        command: ['sh', '-c', 'apk add --no-cache iptables && iptables -t nat -A PREROUTING -p tcp --dport 2379 -j DNAT --to-destination 127.0.0.1:2379 && iptables -t nat -A OUTPUT -p tcp --dport 2379 -j DNAT --to-destination 127.0.0.1:2379']
+        securityContext:
+          privileged: true
       containers:
       - name: raft-container
         image: {{ .Values.raft.deployment.image }}
         imagePullPolicy: {{ .Values.raft.deployment.imagePullPolicy }}
-        command: ["/siglens/sigscalr"]
+        command: ["/bin/sh"]
         args:
-          - /siglens/sigscalr
-          - --config
-          - /config/server.yaml
+          - -c
+          - |
+            sleep 10
+            exec /siglens/sigscalr --config /config/server.yaml
         ports:
         - containerPort: {{ .Values.raft.deployment.ports.ingest }}
         - containerPort: {{ .Values.raft.deployment.ports.raft }}  # Raft port

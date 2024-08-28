@@ -50,6 +50,9 @@ acme:
 secrets:
   licenseKey: ""
 
+multinode:
+  enabled: true
+
 # Annotations for pod privileges. Needed for setups with S3 (which is required
 # for multinode) so the pods can read and write to S3.
 serviceAccountAnnotations:

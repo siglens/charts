@@ -20,12 +20,6 @@ data:
       dbname: db1
     ingestNode: true
     queryNode: true
-    etcd:
-      enabled: {{ .Values.etcd.enabled }}
-      username: {{ .Values.etcd.username }}
-      password: {{ .Values.etcd.password }}
-      seedUrls:
-        - {{ printf "http://%s-etcd.%s.svc.cluster.local:2379" .Release.Name .Release.Namespace }}
     isRaftNode: true
     raft:
       enabled: true
