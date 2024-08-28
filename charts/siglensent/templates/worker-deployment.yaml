@@ -25,8 +25,8 @@ spec:
           mountPath: /siglens/data
       containers:
       - name: worker-container
-        image: {{ .Values.worker.deployment.image }}
-        imagePullPolicy: Always
+        image: {{ .Values.registry.image }}
+        imagePullPolicy: {{ .Values.registry.imagePullPolicy }}
         command: ["/siglens/sigscalr"]
         args: ["--config", "/config/server.yaml"]
         ports:
@@ -55,4 +55,4 @@ spec:
             path: license.txt
       - name: cert-volume
         secret:
-          secretName: ingress-tls
+          secretName: {{ .Values.ingress.tlsSecret }}

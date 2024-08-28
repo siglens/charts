@@ -8,5 +8,5 @@ spec:
   selector:
     app: raft-node
   ports:
-    - port: 2379
-      targetPort: 2379
+    - port: {{ .Values.raft.deployment.ports.raft }}
+      targetPort: {{ .Values.raft.deployment.ports.raft }}

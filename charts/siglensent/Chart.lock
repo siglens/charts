@@ -5,5 +5,8 @@ dependencies:
 - name: cert-manager
   repository: https://charts.jetstack.io
   version: v1.14.4
-digest: sha256:f327ff7a0db12dc4ef319d1a69bc8bb25e755fa1e02fe2f4e7a937f29af24233
-generated: "2024-08-27T17:29:08.203426-04:00"
+- name: etcd
+  repository: https://charts.bitnami.com/bitnami
+  version: 10.0.3
+digest: sha256:a790c866e547d9ee35a4301b9d873a78997d02c9e7a8e78d88f8678533f96c17
+generated: "2024-08-28T13:22:12.963838-04:00"

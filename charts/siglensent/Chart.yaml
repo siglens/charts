@@ -26,3 +26,7 @@ dependencies:
   - name: cert-manager
     version: "1.14.4"
     repository: https://charts.jetstack.io
+  - name: etcd
+    version: "10.0.3"
+    repository: https://charts.bitnami.com/bitnami
+    condition: multinode.enabled

@@ -39,17 +39,12 @@ spec:
           privileged: true
       containers:
       - name: raft-container
-        image: {{ .Values.raft.deployment.image }}
-        imagePullPolicy: {{ .Values.raft.deployment.imagePullPolicy }}
-        command: ["/bin/sh"]
-        args:
-          - -c
-          - |
-            sleep 10
-            exec /siglens/sigscalr --config /config/server.yaml
+        image: {{ .Values.registry.image }}
+        imagePullPolicy: {{ .Values.registry.imagePullPolicy }}
+        command: ["/siglens/sigscalr"]
+        args: ["--config", "/config/server.yaml"]
         ports:
-        - containerPort: {{ .Values.raft.deployment.ports.ingest }}
-        - containerPort: {{ .Values.raft.deployment.ports.raft }}  # Raft port
+        - containerPort: {{ .Values.raft.deployment.ports.raft }}
         volumeMounts:
         - mountPath: /siglens/data
           name: data-volume
@@ -79,4 +74,4 @@ spec:
             path: license.txt
       - name: cert-volume
         secret:
-          secretName: ingress-tls
+          secretName: {{ .Values.ingress.tlsSecret }}

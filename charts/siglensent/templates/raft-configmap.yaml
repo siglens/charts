@@ -18,8 +18,8 @@ data:
     rbac:
       provider: sqlite
       dbname: db1
-    ingestNode: true
-    queryNode: true
+    ingestNode: false
+    queryNode: false
     isRaftNode: true
     raft:
       enabled: true
