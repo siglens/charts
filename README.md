@@ -90,12 +90,12 @@ siglens:
 # Siglensent
 ## Installation
 Create a custom-values.yaml file where you'll supply your license and other
-configurations. By default the chart installs into the `siglens` namespace;
+configurations. By default the chart installs into the `siglensent` namespace;
 you can change this in your custom-values.yaml, or you can first create that
-namespace with `kubectl create namespace siglens`. Then install with:
+namespace with `kubectl create namespace siglensent`. Then install with:
 ```
 helm repo add siglens-repo https://siglens.github.io/charts
-helm install siglensent siglens-repo/siglensent -f custom-values.yaml --namespace siglens
+helm install siglensent siglens-repo/siglensent -f custom-values.yaml --namespace siglensent
 ```
 
 If TLS is enabled, you'll need to update your DNS to point to the ingress
