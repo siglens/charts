@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: raft-deployment
+  namespace: {{ .Values.global.namespace }}
+spec:
+  serviceName: raft-service
+  replicas: {{ .Values.raft.deployment.replicas }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data-volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.raft.deployment.storage.size }}
+  selector:
+    matchLabels:
+      app: raft-node
+  template:
+    metadata:
+      labels:
+        app: raft-node
+      annotations:
+        checksum/config: sha256-checksum-placeholder
+    spec:
+      serviceAccountName: {{ .Release.Name }}-service-account
+      initContainers:
+      - name: volume-permissions
+        image: busybox
+        command: ['sh', '-c', 'chown -R 1000:1000 /siglens/data']
+        volumeMounts:
+        - name: data-volume
+          mountPath: /siglens/data
+      - name: setup-iptables
+        image: alpine
+        command: ['sh', '-c', 'apk add --no-cache iptables && iptables -t nat -A PREROUTING -p tcp --dport 2379 -j DNAT --to-destination 127.0.0.1:2379 && iptables -t nat -A OUTPUT -p tcp --dport 2379 -j DNAT --to-destination 127.0.0.1:2379']
+        securityContext:
+          privileged: true
+      containers:
+      - name: raft-container
+        image: {{ .Values.registry.image }}
+        imagePullPolicy: {{ .Values.registry.imagePullPolicy }}
+        command: ["/siglens/sigscalr"]
+        args: ["--config", "/config/server.yaml"]
+        ports:
+        - containerPort: {{ .Values.raft.deployment.ports.raft }}
+        volumeMounts:
+        - mountPath: /siglens/data
+          name: data-volume
+        - mountPath: /config
+          name: raft-config
+        - mountPath: /license
+          name: license-volume
+        {{- if .Values.config.tls.enabled }}
+        - mountPath: /certs
+          name: cert-volume
+        {{- end }}
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+      volumes:
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: gcp-pd-pvc
+      - name: raft-config
+        configMap:
+          name: raft-configmap
+      - name: license-volume
+        secret:
+          secretName: {{ .Release.Name }}-license-secret
+          items:
+          - key: license
+            path: license.txt
+        {{- if .Values.config.tls.enabled }}
+      - name: cert-volume
+        secret:
+          secretName: {{ .Values.ingress.tlsSecret }}
+        {{- end }}
