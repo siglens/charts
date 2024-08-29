@@ -95,7 +95,7 @@ config:
 
 raft:
   deployment:
-    replicas: 3 # Number of replicas for the Raft server
+    replicas: 1 # Number of replicas for the Raft server
     ports:
       raft: 2379
     storage:
