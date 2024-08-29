@@ -14,14 +14,6 @@ ingestHost: ingest.siglens.example.com
 pvc:
   size: 20Gi
 
-# Overrides for the etcd subchart used for multinode configuration in S3
-etcd:
-  namespace: siglensent
-  replicaCount: 3
-  auth:
-    rbac:
-      rootPassword: dontkeepthispassword
-
 storageClass:
   diskType: pd-standard
 
@@ -49,9 +41,6 @@ acme:
 # output of `cat /path/to/licenseKey.txt | base64`.
 secrets:
   licenseBase64: ""
-
-multinode:
-  enabled: true
 
 # Annotations for pod privileges. Needed for setups with S3 (which is required
 # for multinode) so the pods can read and write to S3.
