@@ -89,23 +89,41 @@ siglens:
 
 # Siglensent
 ## Installation
-Create a custom-values.yaml file where you'll supply your license and other
-configurations. By default the chart installs into the `siglensent` namespace;
-you can change this in your custom-values.yaml, or you can first create that
-namespace with `kubectl create namespace siglensent`. Then install with:
-```
-helm repo add siglens-repo https://siglens.github.io/charts
-helm install siglensent siglens-repo/siglensent -f custom-values.yaml --namespace siglensent
-```
 
-If TLS is enabled, you'll need to update your DNS to point to the ingress
-controller. You can find the load balancer with:
-```
-kubectl get svc --all-namespaces
-```
-Look for the service with the `ingress-nginx-controller` name in the namespace
-you installed into. Then make a CNAME record in your DNS to point to the load
-balancer.
+1. **Prepare Configuration**:  
+   Begin by creating a `custom-values.yaml` file, where you'll provide your license key and other necessary configurations. By default, the Helm chart installs in the `siglensent` namespace. If needed, you can change this in your `custom-values.yaml`, or manually create the namespace with the command:  
+   ```bash
+   kubectl create namespace siglensent
+   ```
+
+2. **Add Helm Repository**:  
+   Add the Siglens Helm repository with the following command:  
+   ```bash
+   helm repo add siglens-repo https://siglens.github.io/charts
+   ```
+
+3. **Update License and TLS Settings**:  
+   Update your `licenseBase64` with your Base64-encoded license key. For license key, please reach out at support@sigscalr.io \
+   If TLS is enabled, ensure you also update `acme.registrationEmail`, `ingestHost`, and `queryHost` in your configuration.
+
+4. **Apply Cert-Manager (If TLS is enabled)**:  
+   If TLS is enabled, apply the Cert-Manager CRDs using the following command:  
+   ```bash
+   kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.4/cert-manager.crds.yaml
+   ```
+
+5. **Install Siglensent**:  
+   Install Siglensent using Helm with your custom configuration file:  
+   ```bash
+   helm install siglensent siglens-repo/siglensent -f custom-values.yaml --namespace siglensent
+   ```
+
+6. **Update DNS for TLS (If Applicable)**:  
+   If you are using TLS, update your DNS settings to point to the ingress controller. First, find the load balancer associated with the ingress controller by running:  
+   ```bash
+   kubectl get svc -n siglensent
+   ```  
+   Locate the service with the name `ingress-nginx-controller` in the appropriate namespace, and create a CNAME record in your DNS to point to this load balancer.
 
 **Note:** If you uninstall and reinstall the chart, you'll need to update your
 DNS again. But if you do a `helm upgrade` instead, the ingress controller will
