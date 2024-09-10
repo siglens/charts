@@ -98,7 +98,7 @@ raft:
 
 worker:
   deployment:
-    replicas: 6 # Number of replicas for the Worker server
+    replicas: 3 # Number of replicas for the Worker server
     ports:
       ingest: 8081
     cpu:
