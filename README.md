@@ -117,13 +117,13 @@ siglens:
    Also set the required storage size for the PVC of the worker node: `pvc.size` and storage class type: `storageClass.diskType`
 
 
-5. **Install Siglensent**:  
+6. **Install Siglensent**:  
    Install Siglensent using Helm with your custom configuration file:  
    ```bash
    helm install siglensent siglens-repo/siglensent -f custom-values.yaml --namespace siglensent
    ```
 
-6. **Update DNS for TLS (If Applicable)**:  
+7. **Update DNS for TLS (If Applicable)**:  
    If you are using TLS, update your DNS settings to point to the ingress controller. First, find the load balancer associated with the ingress controller by running:  
    ```bash
    kubectl get svc -n siglensent
