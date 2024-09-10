@@ -112,6 +112,11 @@ siglens:
    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.4/cert-manager.crds.yaml
    ```
 
+5. **Update the Resources Config**:  
+   Update the CPU and memory resources for both raft and worker nodes: `raft.deployment.cpu.request`, `raft.deployment.memory.request`, `worker.deployment.cpu.request`, `worker.deployment.cpu.request`. \
+   Also set the required storage size for the PVC of the worker node: `pvc.size` and storage class type: `storageClass.diskType`
+
+
 5. **Install Siglensent**:  
    Install Siglensent using Helm with your custom configuration file:  
    ```bash

@@ -1,10 +1,19 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: worker-deployment
   namespace: {{ .Values.global.namespace }}
 spec:
   replicas: {{ .Values.worker.deployment.replicas }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data-volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: gcp-pd-rwo
+      resources:
+        requests:
+          storage: {{ .Values.pvc.size }}
   selector:
     matchLabels:
       app: worker-node
@@ -31,6 +40,13 @@ spec:
         args: ["--config", "/config/server.yaml"]
         ports:
         - containerPort: {{ .Values.worker.deployment.ports.ingest }}
+        resources:
+          requests:
+            cpu: {{ .Values.worker.deployment.cpu.request }}             
+            memory: {{ .Values.worker.deployment.memory.request }}      
+          limits:
+            cpu: {{ .Values.worker.deployment.cpu.limit }}              
+            memory: {{ .Values.worker.deployment.memory.limit }}       
         volumeMounts:
         - mountPath: /siglens/data
           name: data-volume
