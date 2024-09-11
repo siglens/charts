@@ -91,7 +91,7 @@ siglens:
 ## Installation
 
 1. **Prepare Configuration**:  
-   Begin by creating a `custom-values.yaml` file, where you'll provide your license key and other necessary configurations. Please look at the `values.yaml` file that is there at `charts/siglensent/values.yaml` for all the available config. By default, the Helm chart installs in the `siglensent` namespace. If needed, you can change this in your `custom-values.yaml`, or manually create the namespace with the command:  
+   Begin by creating a `custom-values.yaml` file, where you'll provide your license key and other necessary configurations. Please look at this [sample `values.yaml` file](https://raw.githubusercontent.com/siglens/charts/main/charts/siglensent/values.yaml)  for all the available config. By default, the Helm chart installs in the `siglensent` namespace. If needed, you can change this in your `custom-values.yaml`, or manually create the namespace with the command:  
    ```bash
    kubectl create namespace siglensent
    ```
