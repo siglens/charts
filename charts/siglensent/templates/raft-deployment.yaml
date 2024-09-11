@@ -45,6 +45,13 @@ spec:
         args: ["--config", "/config/server.yaml"]
         ports:
         - containerPort: {{ .Values.raft.deployment.ports.raft }}
+        resources:
+          requests:
+            cpu: {{ .Values.raft.deployment.cpu.request }}
+            memory: {{ .Values.raft.deployment.memory.request }}
+          limits:
+            cpu: {{ .Values.raft.deployment.cpu.limit }}
+            memory: {{ .Values.raft.deployment.memory.limit }}
         volumeMounts:
         - mountPath: /siglens/data
           name: data-volume

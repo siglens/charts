@@ -112,13 +112,18 @@ siglens:
    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.4/cert-manager.crds.yaml
    ```
 
-5. **Install Siglensent**:  
+5. **Update the Resources Config**:  
+   Update the CPU and memory resources for both raft and worker nodes: `raft.deployment.cpu.request`, `raft.deployment.memory.request`, `worker.deployment.cpu.request`, `worker.deployment.cpu.request` and also update the corresponding limits. \
+   Also set the required storage size for the PVC of the worker node: `pvc.size` and storage class type: `storageClass.diskType`
+
+
+6. **Install Siglensent**:  
    Install Siglensent using Helm with your custom configuration file:  
    ```bash
    helm install siglensent siglens-repo/siglensent -f custom-values.yaml --namespace siglensent
    ```
 
-6. **Update DNS for TLS (If Applicable)**:  
+7. **Update DNS for TLS (If Applicable)**:  
    If you are using TLS, update your DNS settings to point to the ingress controller. First, find the load balancer associated with the ingress controller by running:  
    ```bash
    kubectl get svc -n siglensent

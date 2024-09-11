@@ -12,10 +12,10 @@ queryHost: siglens.example.com
 ingestHost: ingest.siglens.example.com
 
 pvc:
-  size: 20Gi
+  size: 20G    # Size of the PVC for the Worker node
 
 storageClass:
-  diskType: pd-standard
+  diskType: pd-ssd
 
 ingestService:
   selector:
@@ -87,14 +87,26 @@ raft:
     replicas: 1 # Number of replicas for the Raft server
     ports:
       raft: 2379
+    cpu:
+      request: "1" # Request number of vCPUs for the Raft node
+      limit: "2" # Max limit of vCPUs for the Raft node
+    memory:
+      request: "2G" # Request RAM size for the Raft node
+      limit: "4G" # Max limit of RAM for the Raft node
     storage:
-      size: "10Gi"
+      size: "10G" #  Storage for the Raft node
 
 worker:
   deployment:
     replicas: 3 # Number of replicas for the Worker server
     ports:
       ingest: 8081
+    cpu:
+      request: "6" # Request number of vCPUs for the worker node
+      limit: "8" # Max limit of vCPUs for the worker node
+    memory:
+      request: "12G" # Request RAM size for the worker node
+      limit: "16G" # Max limit of RAM for the worker node
 
 
 registry:
