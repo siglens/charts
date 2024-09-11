@@ -113,7 +113,7 @@ siglens:
    ```
 
 5. **Update the Resources Config**:  
-   Update the CPU and memory resources for both raft and worker nodes: `raft.deployment.cpu.request`, `raft.deployment.memory.request`, `worker.deployment.cpu.request`, `worker.deployment.cpu.request`. \
+   Update the CPU and memory resources for both raft and worker nodes: `raft.deployment.cpu.request`, `raft.deployment.memory.request`, `worker.deployment.cpu.request`, `worker.deployment.cpu.request` and also update the corresponding limits. \
    Also set the required storage size for the PVC of the worker node: `pvc.size` and storage class type: `storageClass.diskType`
 
 
