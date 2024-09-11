@@ -59,9 +59,6 @@ spec:
           name: cert-volume
         {{- end }}
       volumes:
-      - name: data-volume
-        persistentVolumeClaim:
-          claimName: gcp-pd-pvc
       - name: worker-config
         configMap:
           name: worker-configmap

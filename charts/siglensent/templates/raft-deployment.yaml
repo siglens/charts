@@ -11,6 +11,7 @@ spec:
       name: data-volume
     spec:
       accessModes: [ "ReadWriteOnce" ]
+      storageClassName: gcp-pd-standard-rwo
       resources:
         requests:
           storage: {{ .Values.raft.deployment.storage.size }}
@@ -69,9 +70,6 @@ spec:
             fieldRef:
               fieldPath: status.podIP
       volumes:
-      - name: data-volume
-        persistentVolumeClaim:
-          claimName: gcp-pd-pvc
       - name: raft-config
         configMap:
           name: raft-configmap
