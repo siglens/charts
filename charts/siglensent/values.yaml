@@ -82,6 +82,12 @@ config:
   worker:
     ssInstanceName: "worker-node"
 
+  s3:
+    enabled: false
+    bucketName: ""
+    bucketPrefix: ""
+    regionName: ""
+
 raft:
   deployment:
     replicas: 1 # Number of replicas for the Raft server
