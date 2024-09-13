@@ -46,7 +46,20 @@ spec:
             memory: {{ .Values.worker.deployment.memory.request }}      
           limits:
             cpu: {{ .Values.worker.deployment.cpu.limit }}              
-            memory: {{ .Values.worker.deployment.memory.limit }}       
+            memory: {{ .Values.worker.deployment.memory.limit }}
+        env:
+        {{- if .Values.config.s3.enabled }}
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-keys
+              key: aws_access_key_id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aws-keys
+              key: aws_secret_access_key 
+        {{- end }}      
         volumeMounts:
         - mountPath: /siglens/data
           name: data-volume

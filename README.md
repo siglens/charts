@@ -116,14 +116,22 @@ siglens:
    Update the CPU and memory resources for both raft and worker nodes: `raft.deployment.cpu.request`, `raft.deployment.memory.request`, `worker.deployment.cpu.request`, `worker.deployment.cpu.request` and also update the corresponding limits. \
    Also set the required storage size for the PVC of the worker node: `pvc.size` and storage class type: `storageClass.diskType`
 
+6. **Create Secret Keys for S3 (If Applicable)**:
+   If S3 config is enabled. Then create a secret with IAM keys that have access to S3 using the below command: 
+   ```bash
+   kubectl create secret generic aws-keys \
+   --from-literal=aws_access_key_id=<accessKey> \
+   --from-literal=aws_secret_access_key=<secretKey> \
+   --namespace=siglensent
+   ```
 
-6. **Install Siglensent**:  
+7. **Install Siglensent**:  
    Install Siglensent using Helm with your custom configuration file:  
    ```bash
    helm install siglensent siglens-repo/siglensent -f custom-values.yaml --namespace siglensent
    ```
 
-7. **Update DNS for TLS (If Applicable)**:  
+8. **Update DNS for TLS (If Applicable)**:  
    If you are using TLS, update your DNS settings to point to the ingress controller. First, find the load balancer associated with the ingress controller by running:  
    ```bash
    kubectl get svc -n siglensent

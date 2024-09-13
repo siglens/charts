@@ -15,6 +15,11 @@ data:
     timestampKey: {{ .Values.config.timestampKey }}
     licenseKeyPath: {{ .Values.config.licenseKeyPath }}
     ssInstanceName: {{ .Values.config.worker.ssInstanceName }}
+    s3:
+      enabled: {{ .Values.config.s3.enabled }}
+      bucketName: {{ .Values.config.s3.bucketName }}
+      bucketPrefix: {{ .Values.config.s3.bucketPrefix }}
+      regionName: {{ .Values.config.s3.regionName }}
     rbac:
       provider: sqlite
       dbname: db1
