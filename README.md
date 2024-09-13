@@ -119,7 +119,8 @@ siglens:
 6. **Create Secret Keys for S3 (If Applicable)**:
    If S3 config is enabled. Then create a secret with IAM keys that have access to S3 using the below command: 
    ```bash
-   kubectl create secret generic aws-keys \                                                                                                                 --from-literal=aws_access_key_id=<accessKey> \
+   kubectl create secret generic aws-keys \
+   --from-literal=aws_access_key_id=<accessKey> \
    --from-literal=aws_secret_access_key=<secretKey> \
    --namespace=siglensent
    ```
