@@ -120,16 +120,16 @@ siglens:
    To enable `S3` storage. Please set the following the config in the `values.yaml` file under `config` section:
    ```
    config:
-   ... # other config params
+      ... # other config params
 
-   blobStoreMode: "S3"  
-   s3:
-      enabled: false   # Set to true if you want to use S3
-      bucketName: ""
-      bucketPrefix: ""
-      regionName: ""
-   
-   ... # other config params
+      blobStoreMode: "S3"  
+      s3:
+         enabled: true   # Set to true if you want to use S3
+         bucketName: "bucketName"
+         bucketPrefix: "data"
+         regionName: "us-east-1"
+      
+      ... # other config params
    ```
 
 

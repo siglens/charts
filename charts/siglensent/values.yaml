@@ -82,7 +82,7 @@ config:
   worker:
     ssInstanceName: "worker-node"
 
-  blobStoreMode: "S3"  # S3
+  blobStoreMode: "none"  # S3 or none or "" are valid options
 
   s3:
     enabled: false   # Set to true if you want to use S3
