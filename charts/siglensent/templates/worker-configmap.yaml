@@ -15,6 +15,7 @@ data:
     timestampKey: {{ .Values.config.timestampKey }}
     licenseKeyPath: {{ .Values.config.licenseKeyPath }}
     ssInstanceName: {{ .Values.config.worker.ssInstanceName }}
+    blobStoreMode: {{ .Values.config.blobStoreMode }}
     s3:
       enabled: {{ .Values.config.s3.enabled }}
       bucketName: {{ .Values.config.s3.bucketName }}
