@@ -82,8 +82,10 @@ config:
   worker:
     ssInstanceName: "worker-node"
 
+  blobStoreMode: "S3"  # S3
+
   s3:
-    enabled: false
+    enabled: false   # Set to true if you want to use S3
     bucketName: ""
     bucketPrefix: ""
     regionName: ""
@@ -120,5 +122,5 @@ registry:
   # Not needed for public registries. If you're using a private registry, set this to the output
   # of `cat ~/.docker/config.json | base64`.
   dockerConfigBase64: ""
-  image: public.ecr.aws/l3t9n5v5/siglens-enterprise:0.2.35-ent1
+  image: public.ecr.aws/l3t9n5v5/siglens-enterprise:0.2.36-ent1
   imagePullPolicy: Always
