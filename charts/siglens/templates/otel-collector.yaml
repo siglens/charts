@@ -67,8 +67,8 @@ data:
     processors:
       batch:
     exporters:
-      logging:
-        loglevel: debug
+      debug:
+        verbosity: detailed
       prometheusremotewrite:
         endpoint: 'http://{{ include "siglens.fullname" . }}-ingest-svc:{{ .Values.siglens.configs.ingestPort }}/promql/api/v1/write'
     service:
