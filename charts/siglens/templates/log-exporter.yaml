@@ -98,7 +98,13 @@ data:
         tag kubernetes.*
         read_from_head true
         <parse>
-          @type json
+          @type multi_format
+          <pattern>
+            format json
+          </pattern>
+          <pattern>
+            format none
+          </pattern>
         </parse>
     </source>
     <filter kubernetes.**>
@@ -114,7 +120,7 @@ data:
         @log_level info
         host "#{ENV['FLUENT_ELASTICSEARCH_HOST']}"
         port "#{ENV['FLUENT_ELASTICSEARCH_PORT']}"
-        path "#{ENV['FLUENT_ELASTICSEARCH_PATH'] || '/elastic'}"
+        path "#{ENV['FLUENT_ELASTICSEARCH_PATH'] || '/elastic/'}"
         scheme "#{ENV['FLUENT_ELASTICSEARCH_SCHEME'] || 'http'}"
         ssl_verify "#{ENV['FLUENT_ELASTICSEARCH_SSL_VERIFY'] || 'false'}"
         ssl_version "#{ENV['FLUENT_ELASTICSEARCH_SSL_VERSION'] || 'TLSv1_2'}"
