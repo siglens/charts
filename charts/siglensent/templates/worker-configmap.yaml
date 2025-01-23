@@ -24,6 +24,21 @@ data:
     rbac:
       provider: sqlite
       dbname: db1
+    emailConfig:
+      smtpHost: {{ .Values.config.emailConfig.smtpHost }}
+      smtpPort: {{ .Values.config.emailConfig.smtpPort }}
+      senderEmail: {{ .Values.config.emailConfig.senderEmail }}
+      gmailAppPassword: {{ .Values.config.emailConfig.gmailAppPassword }}
+    saas:
+      enabled: {{ .Values.config.saas.enabled }}
+      googleAuth:
+        clientId: {{ .Values.config.saas.googleAuth.clientId }}
+        clientSecret: {{ .Values.config.saas.googleAuth.clientSecret }}
+        callbackUrl: {{ .Values.config.saas.googleAuth.callbackUrl }}
+      githubAuth:
+        clientId: {{ .Values.config.saas.githubAuth.clientId }}
+        clientSecret: {{ .Values.config.saas.githubAuth.clientSecret }} 
+        callbackUrl: {{ .Values.config.saas.githubAuth.callbackUrl }}
     ingestNode: true
     queryNode: true
     isRaftNode: false

@@ -22,7 +22,6 @@ data:
     queryNode: false
     isRaftNode: true
     raft:
-      enabled: true
       raftNodes:
 {{- $namespace := .Release.Namespace }}
 {{- range $i := until (int .Values.raft.deployment.replicas) }}
