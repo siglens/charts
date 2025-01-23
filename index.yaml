@@ -78,6 +78,26 @@ entries:
     version: 0.1.0
   siglensent:
   - apiVersion: v2
+    appVersion: 1.0.9-ent1
+    created: "2025-01-23T21:40:09.895586092Z"
+    dependencies:
+    - name: ingress-nginx
+      repository: https://kubernetes.github.io/ingress-nginx
+      version: 4.10.0
+    - name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.14.4
+    description: A Helm chart for Kubernetes
+    digest: 77dc0604acc9ebe23ef0100078dfc75817ddbbf99bf9c816ac8a330d054866e6
+    maintainers:
+    - name: SigLens
+      url: https://github.com/siglens/charts
+    name: siglensent
+    type: application
+    urls:
+    - https://github.com/siglens/charts/releases/download/siglensent-0.1.5/siglensent-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v2
     appVersion: 0.2.36-ent1
     created: "2024-09-16T22:24:48.442456667Z"
     dependencies:
@@ -161,4 +181,4 @@ entries:
     urls:
     - https://github.com/siglens/charts/releases/download/siglensent-0.1.1/siglensent-0.1.1.tgz
     version: 0.1.1
-generated: "2025-01-06T17:27:39.203555438Z"
+generated: "2025-01-23T21:40:09.895610779Z"
