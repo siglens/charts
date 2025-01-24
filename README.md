@@ -116,31 +116,62 @@ siglens:
    Update the CPU and memory resources for both raft and worker nodes: `raft.deployment.cpu.request`, `raft.deployment.memory.request`, `worker.deployment.cpu.request`, `worker.deployment.cpu.request` and also update the corresponding limits. \
    Also set the required storage size for the PVC of the worker node: `pvc.size` and storage class type: `storageClass.diskType`
 
-6. **Enabling S3 as Blob Storage**:
-   To enable `S3` storage. Please set the following the config in the `values.yaml` file under `config` section:
+6. **(Optional) Enable Blob Storage**
+   **Use S3**
+   a. **Update Config**:
+   Update the config section in `values.yaml`:
    ```
    config:
       ... # other config params
 
-      blobStoreMode: "S3"  
+      blobStoreMode: "S3"
       s3:
-         enabled: true   # Set to true if you want to use S3
+         enabled: true
          bucketName: "bucketName"
-         bucketPrefix: "data"
+         bucketPrefix: "subdir"
          regionName: "us-east-1"
       
       ... # other config params
    ```
 
-
-7. **Create Secret Keys for AWS S3 (If Applicable)**:
-   If S3 config is enabled. Then create a secret with IAM keys that have access to S3 using the below command: 
+   b. **Create AWS secret**:
+   Create a secret with IAM keys that have access to S3 using the below command: 
    ```bash
    kubectl create secret generic aws-keys \
    --from-literal=aws_access_key_id=<accessKey> \
    --from-literal=aws_secret_access_key=<secretKey> \
    --namespace=siglensent
    ```
+
+   **Use GCS**
+   a. **Update Config**:
+   Update the `config` section in the `values.yaml`:
+   ```
+    config:
+        ... # other config params
+    
+        blobStoreMode: "GCS"
+        s3:
+          enabled: true
+        gcs:
+            bucketName: "bucketName"
+            bucketPrefix: "subdir"
+            regionName: "us-east1"
+        
+        ... # other config params
+    ```
+   b. **Create GCS secret**:
+      i. Create a service account with the these permissions:
+         - Storage Admin
+         - Storage Object Admin
+      ii. Create a key for the service account and download the JSON file.
+      iii. Create a secret with the key using the below command (use the absolute path):
+      ```bash
+      kubectl create secret generic gcs-key \
+      --from-file=key.json=/path/to/your-key.json \
+      --namespace=siglensent
+      ```
+      iv. Add the service account to the `serviceAccountAnnotations` section in `values.yaml`.
 
 8. **Install Siglensent**:  
    Install Siglensent using Helm with your custom configuration file:  
@@ -153,7 +184,9 @@ siglens:
    ```bash
    kubectl get svc -n siglensent
    ```  
-   Locate the service with the name `ingress-nginx-controller` in the appropriate namespace, and create a CNAME record in your DNS to point to this load balancer.
+
+   Find the External IP of the `ingress-nginx-controller` service, create two A records in your DNS to point to this IP.
+   One for `ingestHost` and one for `queryHost` as defined in your `custom-values.yaml`.
 
 **Note:** If you uninstall and reinstall the chart, you'll need to update your
 DNS again. But if you do a `helm upgrade` instead, the ingress controller will
