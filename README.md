@@ -37,9 +37,9 @@ If k8sExporter or logsExporter is enabled, then a ClusterRole will be created to
 
 ## Storage options
 
-Currently, only `awsEBS` and `local` storage classes provisioners can be configured by setting `storage.defaultClass: false` and setting the required configs. To add more types of storage classes, add the necessary provisioner info to [`storage.yaml`](charts/siglens/templates/storage.yaml). 
+Currently, only `awsEBS` and `local` storage classes provisioners can be configured by setting `storage.defaultClass: false` and setting the required configs. To add more types of storage classes, add the necessary provisioner info to [`storage.yaml`](charts/siglens/templates/storage.yaml).
 
-It it recommended to use a storage class that supports volume expansion. 
+It it recommended to use a storage class that supports volume expansion.
 
 Example configuration to use an EBS storage class.
 ```
@@ -47,7 +47,7 @@ storage:
     defaultClass: false
     size: 20Gi
     awsEBS:
-      parameters: 
+      parameters:
         type: "gp2"
         fsType: "ext4"
 ```
@@ -59,7 +59,7 @@ storage:
     size: 20Gi
     local:
         hostname: minikube
-        capacity: 5Gi 
+        capacity: 5Gi
         path: /data # must be present on local machine
 ```
 
@@ -90,29 +90,29 @@ siglens:
 # Siglensent
 ## Installation
 
-1. **Prepare Configuration**:  
-   Begin by creating a `custom-values.yaml` file, where you'll provide your license key and other necessary configurations. Please look at this [sample `values.yaml` file](https://raw.githubusercontent.com/siglens/charts/main/charts/siglensent/values.yaml)  for all the available config. By default, the Helm chart installs in the `siglensent` namespace. If needed, you can change this in your `custom-values.yaml`, or manually create the namespace with the command:  
+1. **Prepare Configuration**:
+   Begin by creating a `custom-values.yaml` file, where you'll provide your license key and other necessary configurations. Please look at this [sample `values.yaml` file](https://raw.githubusercontent.com/siglens/charts/main/charts/siglensent/values.yaml)  for all the available config. By default, the Helm chart installs in the `siglensent` namespace. If needed, you can change this in your `custom-values.yaml`, or manually create the namespace with the command:
    ```bash
    kubectl create namespace siglensent
    ```
 
-2. **Add Helm Repository**:  
-   Add the Siglens Helm repository with the following command:  
+2. **Add Helm Repository**:
+   Add the Siglens Helm repository with the following command:
    ```bash
    helm repo add siglens-repo https://siglens.github.io/charts
    ```
 
-3. **Update License and TLS Settings**:  
+3. **Update License and TLS Settings**:
    Update your `licenseBase64` with your Base64-encoded license key. For license key, please reach out at support@sigscalr.io \
    If TLS is enabled, ensure you also update `acme.registrationEmail`, `ingestHost`, and `queryHost` in your configuration.
 
-4. **Apply Cert-Manager (If TLS is enabled)**:  
-   If TLS is enabled, apply the Cert-Manager CRDs using the following command:  
+4. **Apply Cert-Manager (If TLS is enabled)**:
+   If TLS is enabled, apply the Cert-Manager CRDs using the following command:
    ```bash
    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.4/cert-manager.crds.yaml
    ```
 
-5. **Update the Resources Config**:  
+5. **Update the Resources Config**:
    Update the CPU and memory resources for both raft and worker nodes: `raft.deployment.cpu.request`, `raft.deployment.memory.request`, `worker.deployment.cpu.request`, `worker.deployment.cpu.request` and also update the corresponding limits. \
    Also set the required storage size for the PVC of the worker node: `pvc.size` and storage class type: `storageClass.diskType`
 
@@ -130,12 +130,12 @@ siglens:
          bucketName: "bucketName"
          bucketPrefix: "subdir"
          regionName: "us-east-1"
-      
+
       ... # other config params
    ```
 
    b. **Create AWS secret**:
-   Create a secret with IAM keys that have access to S3 using the below command: 
+   Create a secret with IAM keys that have access to S3 using the below command:
    ```bash
    kubectl create secret generic aws-keys \
    --from-literal=aws_access_key_id=<accessKey> \
@@ -149,7 +149,7 @@ siglens:
    ```
     config:
         ... # other config params
-    
+
         blobStoreMode: "GCS"
         s3:
           enabled: true
@@ -157,7 +157,7 @@ siglens:
             bucketName: "bucketName"
             bucketPrefix: "subdir"
             regionName: "us-east1"
-        
+
         ... # other config params
     ```
    b. **Create GCS secret**:
@@ -173,17 +173,17 @@ siglens:
       ```
       iv. Add the service account to the `serviceAccountAnnotations` section in `values.yaml`.
 
-8. **Install Siglensent**:  
-   Install Siglensent using Helm with your custom configuration file:  
+8. **Install Siglensent**:
+   Install Siglensent using Helm with your custom configuration file:
    ```bash
    helm install siglensent siglens-repo/siglensent -f custom-values.yaml --namespace siglensent
    ```
 
-9. **Update DNS for TLS (If Applicable)**:  
-   If you are using TLS, update your DNS settings to point to the ingress controller. First, find the load balancer associated with the ingress controller by running:  
+9. **Update DNS for TLS (If Applicable)**:
+   If you are using TLS, update your DNS settings to point to the ingress controller. First, find the load balancer associated with the ingress controller by running:
    ```bash
    kubectl get svc -n siglensent
-   ```  
+   ```
 
    Find the External IP of the `ingress-nginx-controller` service, create two A records in your DNS to point to this IP.
    One for `ingestHost` and one for `queryHost` as defined in your `custom-values.yaml`.
