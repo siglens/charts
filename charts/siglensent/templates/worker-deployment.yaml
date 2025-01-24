@@ -49,6 +49,7 @@ spec:
             memory: {{ .Values.worker.deployment.memory.limit }}
         env:
         {{- if .Values.config.s3.enabled }}
+        {{- if eq .Values.config.blobStoreMode "S3" }}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
@@ -59,7 +60,13 @@ spec:
             secretKeyRef:
               name: aws-keys
               key: aws_secret_access_key 
+        {{- else if eq .Values.config.blobStoreMode "GCS" }}
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/var/secrets/google/key.json"
+        - name: STORAGE_BACKEND
+          value: "gcs"
         {{- end }}      
+        {{- end }}
         volumeMounts:
         - mountPath: /siglens/data
           name: data-volume
@@ -71,6 +78,8 @@ spec:
         - mountPath: /certs
           name: cert-volume
         {{- end }}
+        - mountPath: /var/secrets/google
+          name: gcs-key
       volumes:
       - name: worker-config
         configMap:
@@ -86,3 +95,6 @@ spec:
         secret:
           secretName: {{ .Values.ingress.tlsSecret }}
         {{- end }}
+      - name: gcs-key
+        secret:
+          secretName: gcs-key

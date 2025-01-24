@@ -21,6 +21,10 @@ data:
       bucketName: {{ .Values.config.s3.bucketName }}
       bucketPrefix: {{ .Values.config.s3.bucketPrefix }}
       regionName: {{ .Values.config.s3.regionName }}
+    gcs:
+      bucketName: {{ .Values.config.gcs.bucketName }}
+      bucketPrefix: {{ .Values.config.gcs.bucketPrefix }}
+      regionName: {{ .Values.config.gcs.regionName }}
     rbac:
       provider: sqlite
       dbname: db1
