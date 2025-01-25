@@ -185,12 +185,10 @@ siglens:
    ```
 
 8. **Update DNS for TLS (If Applicable)**:
-   1. If you are using TLS, update your DNS settings to point to the ingress controller
-   2. First, find the load balancer associated with the ingress controller by running:
+   1. Run:
       ```bash
       kubectl get svc -n siglensent
       ```
-   3. Find the External IP of the `ingress-nginx-controller` service, create two A records in your DNS to point to this IP
-   4. One for `ingestHost` and one for `queryHost` as defined in your `custom-values.yaml`
+   2. Find the External IP of the `ingress-nginx-controller` service. Then create two A records in your DNS to point to this IP; one for `ingestHost` and one for `queryHost` as defined in your `custom-values.yaml`
 
 **Note:** If you uninstall and reinstall the chart, you'll need to update your DNS again. But if you do a `helm upgrade` instead, the ingress controller will persist, so you won't have to update your DNS.
