@@ -37,8 +37,8 @@ acme:
   useProductionCertificate: true
   registrationEmail: "you@example.com"
 
-# images require a license. To specify your license, set "licenseBase64" to the
-# output of `cat /path/to/licenseKey.txt | base64`.
+# Enterprise images require a license. To specify your license, set
+# "licenseBase64" to the output of `cat /path/to/licenseKey.txt | base64`.
 secrets:
   licenseBase64: ""
 
@@ -93,9 +93,9 @@ config:
     bucketPrefix: ""
     regionName: ""
   gcs:
-    bucketName: "andrew-testing"
-    bucketPrefix: "test1"
-    regionName: "us-east1"
+    bucketName: ""
+    bucketPrefix: ""
+    regionName: ""
   
   emailConfig: # Email configuration for sending email notifications
     smtpHost: smtp.gmail.com
