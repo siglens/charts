@@ -37,16 +37,19 @@ acme:
   useProductionCertificate: true
   registrationEmail: "you@example.com"
 
-# images require a license. To specify your license, set "licenseBase64" to the
-# output of `cat /path/to/licenseKey.txt | base64`.
+# Enterprise images require a license. To specify your license, set
+# "licenseBase64" to the output of `cat /path/to/licenseKey.txt | base64`.
 secrets:
   licenseBase64: ""
 
 # Annotations for pod privileges. Needed for setups with S3 (which is required
 # for multinode) so the pods can read and write to S3.
 serviceAccountAnnotations:
-  # Example:
+  # AWS example:
   # eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/YourRole
+  #
+  # GCP example:
+  # iam.gke.io/gcp-service-account: your-service-account@project-123.iam.gserviceaccount.com
 
 # You can add other configs here that siglens supports (e.g., from your
 # server.yaml used to run siglens locally)
@@ -82,10 +85,14 @@ config:
   worker:
     ssInstanceName: "worker-node"
 
-  blobStoreMode: "none"  # S3 or none or "" are valid options
+  blobStoreMode: "none"  # Valid opations are: S3, GCS, none, or ""
 
   s3:
-    enabled: false   # Set to true if you want to use S3
+    enabled: false   # Set to true if you want to use either S3 or GCS
+    bucketName: ""
+    bucketPrefix: ""
+    regionName: ""
+  gcs:
     bucketName: ""
     bucketPrefix: ""
     regionName: ""
