@@ -123,6 +123,18 @@ siglens:
       5. Update the corresponding limits
    2. Set the required storage size for the PVC of the worker node: `pvc.size` and storage class type: `storageClass.diskType`
 
+6. **Update the RBAC Database Config (If SaaS is Enabled)**:
+      ```
+      config: 
+         rbac:
+            # Postgres configuration for RBAC
+            dbname: db1
+            host: "pstgresDbHost"
+            port: 5432
+            user: "username"
+            password: "password"
+    ```
+
 6. **(Optional) Enable Blob Storage**:
    1. **Use S3**:
       1. **Update Config**:

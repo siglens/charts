@@ -26,8 +26,12 @@ data:
       bucketPrefix: {{ .Values.config.gcs.bucketPrefix }}
       regionName: {{ .Values.config.gcs.regionName }}
     rbac:
-      provider: sqlite
-      dbname: db1
+      provider: "postgresql"
+      dbname: {{ .Values.config.rbac.dbname }}
+      host: {{ .Values.config.rbac.host }}
+      port: {{ .Values.config.rbac.port }}
+      user: {{ .Values.config.rbac.user }}
+      password: {{ .Values.config.rbac.password }}
     emailConfig:
       smtpHost: {{ .Values.config.emailConfig.smtpHost }}
       smtpPort: {{ .Values.config.emailConfig.smtpPort }}
