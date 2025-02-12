@@ -85,6 +85,14 @@ config:
   worker:
     ssInstanceName: "worker-node"
 
+  rbac:
+    # Postgres configuration for RBAC
+    dbname: db1
+    host: ""
+    port: 5432
+    user: ""
+    password: ""
+
   blobStoreMode: "none"  # Valid opations are: S3, GCS, none, or ""
 
   s3:
