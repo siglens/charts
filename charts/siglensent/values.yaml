@@ -154,5 +154,5 @@ registry:
   # Not needed for public registries. If you're using a private registry, set this to the output
   # of `cat ~/.docker/config.json | base64`.
   dockerConfigBase64: ""
-  image: public.ecr.aws/l3t9n5v5/siglens-enterprise:1.0.9-ent1
+  image: ghcr.io/sigscalr/hyperion:v1.0.16-ent1
   imagePullPolicy: Always
