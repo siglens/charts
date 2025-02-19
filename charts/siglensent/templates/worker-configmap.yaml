@@ -49,6 +49,8 @@ data:
         callbackUrl: {{ .Values.config.saas.githubAuth.callbackUrl }}
     ingestNode: true
     queryNode: true
+    queryHostname: {{ .Values.queryHostWithPort }}
+    ingestUrl: {{ .Values.ingestHost }}
     isRaftNode: false
     raft:
       raftNodes:

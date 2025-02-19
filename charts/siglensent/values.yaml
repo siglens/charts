@@ -10,6 +10,7 @@ cert-manager:
 
 queryHost: siglens.example.com
 ingestHost: ingest.siglens.example.com
+queryHostWithPort: siglens.example.com:443
 
 pvc:
   size: 20G    # Size of the PVC for the Worker node
@@ -154,5 +155,5 @@ registry:
   # Not needed for public registries. If you're using a private registry, set this to the output
   # of `cat ~/.docker/config.json | base64`.
   dockerConfigBase64: ""
-  image: ghcr.io/sigscalr/hyperion:v1.0.16-ent1
+  image: ghcr.io/sigscalr/hyperion:v1.0.22-ent1
   imagePullPolicy: Always
