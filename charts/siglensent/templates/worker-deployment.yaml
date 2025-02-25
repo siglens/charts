@@ -28,7 +28,16 @@ spec:
       initContainers:
       - name: volume-permissions
         image: busybox
-        command: ['sh', '-c', 'chown -R 1000:1000 /siglens/data']
+        command: 
+          - 'sh'
+          - '-c'
+          - |
+            if [ ! -d /siglens/data ] || [ "$(stat -c %u:%g /siglens/data)" != "1000:1000" ]; then
+              echo "Ownership incorrect or directory doesn't exist. Changing ownership..."
+              chown -R 1000:1000 /siglens/data
+            else
+              echo "Ownership already correct (1000:1000), skipping chown operation"
+            fi
         volumeMounts:
         - name: data-volume
           mountPath: /siglens/data
