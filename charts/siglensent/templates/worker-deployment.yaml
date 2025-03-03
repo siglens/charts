@@ -24,6 +24,7 @@ spec:
       annotations:
         checksum/config: sha256-checksum-placeholder
     spec:
+      terminationGracePeriodSeconds: 300
       serviceAccountName: {{ .Release.Name }}-service-account
       initContainers:
       - name: volume-permissions
