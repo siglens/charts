@@ -29,7 +29,22 @@ spec:
       initContainers:
       - name: volume-permissions
         image: busybox
-        command: ['sh', '-c', 'chown -R 1000:1000 /siglens/data']
+        command:
+          - 'sh'
+          - '-c'
+          - |
+            if [ ! -d /siglens/data ]; then
+              echo "Directory does not exist. Creating /siglens/data"
+              mkdir -p /siglens/data
+              echo "Setting ownership of new directory to 1000:1000"
+              chown 1000:1000 /siglens/data
+            elif [ "$(stat -c '%u:%g' /siglens/data)" != "1000:1000" ]; then
+              echo "Incorrect ownership detected: $(stat -c '%u:%g' /siglens/data). Changing to 1000:1000"
+              chown -R 1000:1000 /siglens/data
+              echo "Ownership change completed"
+            else
+              echo "Directory exists with correct ownership (1000:1000). No changes needed."
+            fi
         volumeMounts:
         - name: data-volume
           mountPath: /siglens/data
