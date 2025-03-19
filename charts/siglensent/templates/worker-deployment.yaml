@@ -38,8 +38,8 @@ spec:
               mkdir -p /siglens/data
               echo "Setting ownership of new directory to 1000:1000"
               chown 1000:1000 /siglens/data
-            elif [ "$(stat -c "%u:%g" /siglens/data)" != "1000:1000" ]; then
-              echo "Incorrect ownership detected: $(stat -c "%u:%g" /siglens/data). Changing to 1000:1000"
+            elif [ "$(stat -c '%u:%g' /siglens/data)" != "1000:1000" ]; then
+              echo "Incorrect ownership detected: $(stat -c '%u:%g' /siglens/data). Changing to 1000:1000"
               chown -R 1000:1000 /siglens/data
               echo "Ownership change completed"
             else
