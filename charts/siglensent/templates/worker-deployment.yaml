@@ -3,6 +3,8 @@ kind: StatefulSet
 metadata:
   name: worker-deployment
   namespace: {{ .Values.global.namespace }}
+  labels:
+    cluster: {{ .Values.clusterName }}
 spec:
   replicas: {{ .Values.worker.deployment.replicas }}
   volumeClaimTemplates:
@@ -21,7 +23,11 @@ spec:
     metadata:
       labels:
         app: worker-node
+        cluster: {{ .Values.clusterName }}
       annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "2222"
+        prometheus.io/path: "/metrics"
         checksum/config: sha256-checksum-placeholder
     spec:
       terminationGracePeriodSeconds: 300
