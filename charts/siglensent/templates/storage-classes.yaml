@@ -3,23 +3,23 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: {{ .Values.storageClass.worker.name | default "gcp-pd-rwo" }}
-provisioner: {{ .Values.storageClass.worker.provisioner | default "pd.csi.storage.gke.io" }}
+  name: {{ coalesce .Values.storageClass.worker.name "gcp-pd-rwo" }}
+provisioner: {{ coalesce .Values.storageClass.worker.provisioner .Values.storageClass.provisioner "pd.csi.storage.gke.io" }}
 parameters:
-  type: {{ .Values.storageClass.worker.diskType }}
-reclaimPolicy: {{ .Values.storageClass.worker.reclaimPolicy | default "Retain" }}
-allowVolumeExpansion: {{ .Values.storageClass.worker.allowVolumeExpansion | default true }}
-volumeBindingMode: {{ .Values.storageClass.worker.volumeBindingMode | default "WaitForFirstConsumer" }}
+  type: {{ coalesce .Values.storageClass.worker.diskType .Values.storageClass.diskType }}
+reclaimPolicy: {{ coalesce .Values.storageClass.worker.reclaimPolicy .Values.storageClass.reclaimPolicy "Retain" }}
+allowVolumeExpansion: {{ coalesce .Values.storageClass.worker.allowVolumeExpansion .Values.storageClass.allowVolumeExpansion true }}
+volumeBindingMode: {{ coalesce .Values.storageClass.worker.volumeBindingMode .Values.storageClass.volumeBindingMode "WaitForFirstConsumer" }}
 ---
 # StorageClass used by Raft StatefulSet
 # Customizable via .Values.storageClass.raft
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: {{ .Values.storageClass.raft.name | default "gcp-pd-standard-rwo" }}
-provisioner: {{ .Values.storageClass.raft.provisioner | default "pd.csi.storage.gke.io" }}
+  name: {{ coalesce .Values.storageClass.raft.name "gcp-pd-standard-rwo" }}
+provisioner: {{ coalesce .Values.storageClass.raft.provisioner .Values.storageClass.provisioner "pd.csi.storage.gke.io" }}
 parameters:
-  type: {{ .Values.storageClass.raft.diskType | default "pd-standard" }}  # Default: GCP Standard persistent disk
-reclaimPolicy: {{ .Values.storageClass.raft.reclaimPolicy | default "Retain" }}
-allowVolumeExpansion: {{ .Values.storageClass.raft.allowVolumeExpansion | default true }}
-volumeBindingMode: {{ .Values.storageClass.raft.volumeBindingMode | default "WaitForFirstConsumer" }}
+  type: {{ coalesce .Values.storageClass.raft.diskType .Values.storageClass.diskType "pd-standard" }}
+reclaimPolicy: {{ coalesce .Values.storageClass.raft.reclaimPolicy .Values.storageClass.reclaimPolicy "Retain" }}
+allowVolumeExpansion: {{ coalesce .Values.storageClass.raft.allowVolumeExpansion .Values.storageClass.allowVolumeExpansion true }}
+volumeBindingMode: {{ coalesce .Values.storageClass.raft.volumeBindingMode .Values.storageClass.volumeBindingMode "WaitForFirstConsumer" }}
