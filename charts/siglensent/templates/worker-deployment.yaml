@@ -62,6 +62,20 @@ spec:
         args: ["--config", "/config/server.yaml"]
         ports:
         - containerPort: {{ .Values.worker.deployment.ports.ingest }}
+        lifecycle:
+          preStop:
+            exec:
+              command:
+                - '/bin/sh'
+                - '-c'
+                - |
+                  if [ "$SHUTDOWN_MODE" = "quick" ]; then
+                    echo "Quick shutdown requested. Sending SIGUSR1"
+                    kill -SIGUSR1 1
+                  else
+                    echo "Normal shutdown requested. Sending SIGTERM"
+                    kill -SIGTERM 1
+                  fi
         resources:
           requests:
             cpu: {{ .Values.worker.deployment.cpu.request }}             
