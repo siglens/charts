@@ -141,6 +141,50 @@ siglens:
       5. Update the corresponding limits
    2. Set the required storage size for the PVC of the worker node: `pvc.size` and storage class type: `storageClass.diskType`
 
+5.5. **(Optional) Customize Storage Classes**:
+
+By default, Siglensent uses GCP Persistent Disk (`pd.csi.storage.gke.io`) as the provisioner and defines two `StorageClass` objects:
+
+- `gcp-pd-rwo` — used for worker node volumes (`pd-ssd` by default)
+- `gcp-pd-standard-rwo` — used for raft node volumes (`pd-standard` by default)
+
+If you're running on a different cloud provider (e.g., AWS), or want to change disk types or provisioner settings, you can override the `storageClass` configuration in `custom-values.yaml`.
+
+### Example: GCP (default)
+
+```yaml
+storageClass:
+  worker:
+    name: gcp-pd-rwo
+    provisioner: pd.csi.storage.gke.io
+    diskType: pd-ssd
+
+  raft:
+    name: gcp-pd-standard-rwo
+    provisioner: pd.csi.storage.gke.io
+    diskType: pd-standard
+```
+
+### Example: AWS (override in custom-values.yaml)
+
+```yaml
+storageClass:
+  worker:
+    name: aws-ebs-gp3
+    provisioner: ebs.csi.aws.com
+    diskType: gp3
+
+  raft:
+    name: aws-ebs-gp2
+    provisioner: ebs.csi.aws.com
+    diskType: gp2
+```
+
+These values control how persistent volumes are provisioned by Kubernetes for both raft and worker nodes.
+
+> ⚠️ **Important:** Avoid changing the `name` of an existing `StorageClass` in a running cluster unless you know what you're doing. Doing so may cause issues with existing PersistentVolumeClaims.
+
+
 6. **Update the RBAC Database Config (If SaaS is Enabled)**:
 
    ```
