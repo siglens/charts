@@ -18,7 +18,22 @@ pvc:
   size: 20G    # Size of the PVC for the Worker node
 
 storageClass:
-  diskType: pd-ssd
+  worker:
+    name: gcp-pd-rwo
+    provisioner: pd.csi.storage.gke.io  # GCP: pd.csi.storage.gke.io | AWS: ebs.csi.aws.com
+    diskType: pd-ssd                    # GCP: pd-standard, pd-ssd | AWS: gp2, gp3
+    reclaimPolicy: Retain
+    allowVolumeExpansion: true
+    volumeBindingMode: WaitForFirstConsumer
+
+  raft:
+    name: gcp-pd-standard-rwo
+    provisioner: pd.csi.storage.gke.io  # GCP: pd.csi.storage.gke.io | AWS: ebs.csi.aws.com
+    diskType: pd-standard               # GCP: pd-standard, pd-ssd | AWS: gp2, gp3
+    reclaimPolicy: Retain
+    allowVolumeExpansion: true
+    volumeBindingMode: WaitForFirstConsumer
+
 
 ingestService:
   selector:
