@@ -11,7 +11,7 @@ spec:
       name: data-volume
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: gcp-pd-standard-rwo
+      storageClassName: {{ .Values.storageClass.raft.name | default "gcp-pd-standard-rwo" }}
       resources:
         requests:
           storage: {{ .Values.raft.deployment.storage.size }}

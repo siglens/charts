@@ -141,6 +141,60 @@ siglens:
       5. Update the corresponding limits
    2. Set the required storage size for the PVC of the worker node: `pvc.size` and storage class type: `storageClass.diskType`
 
+5.5. **(Optional) Customize Storage Classes**:
+
+By default, Siglensent uses GCP Persistent Disk (`pd.csi.storage.gke.io`) as the provisioner and defines two `StorageClass` objects:
+
+- `gcp-pd-rwo` — used for worker node volumes (`pd-ssd` by default)
+- `gcp-pd-standard-rwo` — used for raft node volumes (`pd-standard` by default)
+
+These are customizable through the `storageClass` section in your `custom-values.yaml`.  
+You can define **shared defaults** under `storageClass.<key>` and override per component (`worker`, `raft`) only if needed.
+
+---
+
+### ✅ Default: GCP
+
+```yaml
+storageClass:
+  provisioner: pd.csi.storage.gke.io      # GCP default provisioner
+  diskType: pd-standard                   # Default disk type
+  reclaimPolicy: Retain
+  allowVolumeExpansion: true
+  volumeBindingMode: WaitForFirstConsumer
+
+  worker:
+    name: gcp-pd-rwo                      # name for worker PVCs
+
+  raft:
+    name: gcp-pd-standard-rwo             # name for raft PVCs
+```
+
+---
+
+### 🌩️ AWS Example (override in `custom-values.yaml`)
+
+```yaml
+storageClass:
+  provisioner: ebs.csi.aws.com            # AWS EBS CSI driver
+  diskType: gp2
+  reclaimPolicy: Delete
+
+  worker:
+    name: aws-ebs-gp2-rwo-worker
+    diskType: gp3                         # Override the default gp2 value
+
+  raft:
+    name: aws-ebs-gp2-rwo-raft
+```
+
+> 💡 You only need to override fields that differ from the shared defaults.
+
+---
+
+> ⚠️ **Important:** Avoid changing the `name` of an existing `StorageClass` in a running cluster unless you know what you're doing. Doing so may break existing PersistentVolumeClaims and lead to data loss or pod scheduling issues.
+
+
 6. **Update the RBAC Database Config (If SaaS is Enabled)**:
 
    ```

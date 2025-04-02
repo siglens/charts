@@ -17,8 +17,34 @@ clusterName: siglens-enterprise
 pvc:
   size: 20G    # Size of the PVC for the Worker node
 
+# StorageClass configuration for worker and raft StatefulSets
+# You can set global defaults under storageClass.<key>, or override per component (worker/raft)
+# StorageClass names must be unique per cluster
 storageClass:
-  diskType: pd-ssd
+  # Shared defaults (used unless overridden in worker/raft)
+  provisioner: pd.csi.storage.gke.io      # GCP: pd.csi.storage.gke.io | AWS: ebs.csi.aws.com
+  diskType: pd-standard                   # GCP: pd-standard, pd-ssd | AWS: gp2, gp3
+  reclaimPolicy: Retain                   # Retain | Delete
+  allowVolumeExpansion: true
+  volumeBindingMode: WaitForFirstConsumer
+
+  worker:
+    name: gcp-pd-rwo                      # Unique StorageClass name for worker PVCs
+    # provisioner: pd.csi.storage.gke.io    # (Optional) override global provisioner
+    # diskType: pd-ssd                      # (Optional) override global diskType
+    # reclaimPolicy: Delete              # (Optional) override global reclaimPolicy
+    # allowVolumeExpansion: true            # (Optional) override global allowVolumeExpansion
+    # volumeBindingMode: WaitForFirstConsumer # (Optional) override global volumeBindingMode
+
+  raft:
+    name: gcp-pd-standard-rwo             # Unique StorageClass name for raft PVCs
+    # provisioner: pd.csi.storage.gke.io    # (Optional) override global provisioner
+    # diskType: pd-standard                 # (Optional) override global diskType
+    # reclaimPolicy: Delete              # (Optional) override global reclaimPolicy
+    # allowVolumeExpansion: true            # (Optional) override global allowVolumeExpansion
+    # volumeBindingMode: WaitForFirstConsumer # (Optional) override global volumeBindingMode
+
+
 
 ingestService:
   selector:
