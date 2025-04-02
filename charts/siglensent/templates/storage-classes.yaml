@@ -1,21 +1,25 @@
+# StorageClass used by Worker StatefulSet
+# Customizable via .Values.storageClass.worker
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: gcp-pd-rwo
-provisioner: pd.csi.storage.gke.io
+  name: {{ .Values.storageClass.worker.name | default "gcp-pd-rwo" }}
+provisioner: {{ .Values.storageClass.worker.provisioner | default "pd.csi.storage.gke.io" }}
 parameters:
-  type: {{ .Values.storageClass.diskType }}
-reclaimPolicy: Retain
-allowVolumeExpansion: true
-volumeBindingMode: WaitForFirstConsumer
+  type: {{ .Values.storageClass.worker.diskType }}
+reclaimPolicy: {{ .Values.storageClass.worker.reclaimPolicy | default "Retain" }}
+allowVolumeExpansion: {{ .Values.storageClass.worker.allowVolumeExpansion | default true }}
+volumeBindingMode: {{ .Values.storageClass.worker.volumeBindingMode | default "WaitForFirstConsumer" }}
 ---
+# StorageClass used by Raft StatefulSet
+# Customizable via .Values.storageClass.raft
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: gcp-pd-standard-rwo
-provisioner: pd.csi.storage.gke.io
+  name: {{ .Values.storageClass.raft.name | default "gcp-pd-standard-rwo" }}
+provisioner: {{ .Values.storageClass.raft.provisioner | default "pd.csi.storage.gke.io" }}
 parameters:
-  type: pd-standard  # Standard persistent disk
-reclaimPolicy: Retain
-allowVolumeExpansion: true
-volumeBindingMode: WaitForFirstConsumer
+  type: {{ .Values.storageClass.raft.diskType | default "pd-standard" }}  # Default: GCP Standard persistent disk
+reclaimPolicy: {{ .Values.storageClass.raft.reclaimPolicy | default "Retain" }}
+allowVolumeExpansion: {{ .Values.storageClass.raft.allowVolumeExpansion | default true }}
+volumeBindingMode: {{ .Values.storageClass.raft.volumeBindingMode | default "WaitForFirstConsumer" }}

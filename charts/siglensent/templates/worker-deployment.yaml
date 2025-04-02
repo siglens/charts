@@ -12,7 +12,7 @@ spec:
       name: data-volume
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: gcp-pd-rwo
+      storageClassName: {{ .Values.storageClass.worker.name | default "gcp-pd-rwo" }}
       resources:
         requests:
           storage: {{ .Values.pvc.size }}
