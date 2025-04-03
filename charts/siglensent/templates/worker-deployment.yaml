@@ -69,7 +69,7 @@ spec:
                 - '/bin/sh'
                 - '-c'
                 - |
-                  if [ "$SHUTDOWN_MODE" = "quick" ]; then
+                  if [ "$(cat /siglens/SHUTDOWN_MODE)" = "quick" ]; then
                     echo "Quick shutdown requested. Sending SIGUSR1"
                     kill -SIGUSR1 1
                   else
