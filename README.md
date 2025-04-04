@@ -230,13 +230,14 @@ storageClass:
          ```
 
       2. **Create AWS secret**:
-         Create a secret with IAM keys that have access to S3 using the below command:
-         ```bash
-         kubectl create secret generic aws-keys \
-         --from-literal=aws_access_key_id=<accessKey> \
-         --from-literal=aws_secret_access_key=<secretKey> \
-         --namespace=siglensent
-         ```
+         1. Create a secret with IAM keys that have access to S3 using the below command:
+           ```bash
+           kubectl create secret generic aws-keys \
+           --from-literal=aws_access_key_id=<accessKey> \
+           --from-literal=aws_secret_access_key=<secretKey> \
+           --namespace=siglensent
+           ```
+         2. Add the service account to the `serviceAccountAnnotations` section in `values.yaml`
 
    2. **Use GCS**:
 
