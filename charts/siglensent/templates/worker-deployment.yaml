@@ -86,6 +86,7 @@ spec:
         env:
         {{- if .Values.config.s3.enabled }}
         {{- if eq .Values.config.blobStoreMode "S3" }}
+        {{- if .Values.config.s3.accessThroughAwsKeys }}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
@@ -96,6 +97,7 @@ spec:
             secretKeyRef:
               name: aws-keys
               key: aws_secret_access_key 
+        {{- end}}
         {{- else if eq .Values.config.blobStoreMode "GCS" }}
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: "/var/secrets/google/key.json"
