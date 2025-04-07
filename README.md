@@ -114,9 +114,13 @@ siglens:
 
 2. **Add Helm Repository**:
    Add the Siglens Helm repository with the following command:
-
    ```bash
    helm repo add siglens-repo https://siglens.github.io/charts
+   ```
+
+   If you've previously added the repository, ensure it's updated:
+   ```bash
+   helm repo update siglens-repo
    ```
 
 3. **Update License and TLS Settings**:
@@ -137,8 +141,8 @@ siglens:
       1. `raft.deployment.cpu.request`
       2. `raft.deployment.memory.request`
       3. `worker.deployment.cpu.request`
-      4. `worker.deployment.cpu.request`
-      5. Update the corresponding limits
+      4. `worker.deployment.memory.request`
+      5. `worker.deployment.replicas`
    2. Set the required storage size for the PVC of the worker node: `pvc.size` and storage class type: `storageClass.diskType`
 
 5.5. **(Optional) Customize Storage Classes**:
@@ -200,8 +204,9 @@ storageClass:
    ```
    config:
       rbac:
-         # Postgres configuration for RBAC
+         provider: "postgresql" # Valid options are: postgresql, sqlite
          dbname: db1
+         # Postgres configuration for RBAC
          host: "pstgresDbHost"
          port: 5432
          user: "username"
@@ -229,7 +234,8 @@ storageClass:
             ... # other config params
          ```
 
-      2. **Create AWS secret**:
+      2. **Setup Permissions**
+         **Option 1: AWS access keys**:
          1. Create a secret with IAM keys that have access to S3 using the below command:
            ```bash
            kubectl create secret generic aws-keys \
@@ -237,7 +243,17 @@ storageClass:
            --from-literal=aws_secret_access_key=<secretKey> \
            --namespace=siglensent
            ```
-         2. Add the service account to the `serviceAccountAnnotations` section in `values.yaml`
+         2. Set `s3.accessThroughAwsKeys: true` in your `custom-values.yaml`
+
+         **Option 2: IAM Role**:
+         1. Get the OpenID Connect provider URL for your cluster
+         2. Go to IAM -> Identity providers -> Add provider, and setup a new OpenID Connect provider with that URL and the audience as `sts.amazonaws.com`
+         3. Setup a role
+            1. Go to IAM -> Roles -> Create role, and select the OIDC provider you just created
+            2. Add the condition `<IDENTITY_PROVIDER>:sub = system:serviceaccount:<NAMESPACE>:<RELEASE_NAME>-service-account`. The `<NAMESPACE>` and `<RELEASE_NAME>` are the namespace and release name of your Helm chart; they'll both be `siglensent` if you follow this README exactly.
+            3. Add S3 full access permissions, and create the role
+         4. Add the service account to the `serviceAccountAnnotations` section in `values.yaml`
+         5. Ensure your `custom-values.yaml` has `s3.accessThroughAwsKeys: false`
 
    2. **Use GCS**:
 
