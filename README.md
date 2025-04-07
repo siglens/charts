@@ -113,6 +113,7 @@ siglens:
       ```
 
 2. **Add Helm Repository**:
+
    Add the Siglens Helm repository with the following command:
    ```bash
    helm repo add siglens-repo https://siglens.github.io/charts
@@ -235,6 +236,7 @@ storageClass:
          ```
 
       2. **Setup Permissions**
+
          **Option 1: AWS access keys**:
          1. Create a secret with IAM keys that have access to S3 using the below command:
            ```bash
