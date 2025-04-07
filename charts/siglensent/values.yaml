@@ -129,6 +129,7 @@ config:
     bucketName: ""
     bucketPrefix: ""
     regionName: ""
+    accessThrough: "" # aws-keys or serviceAccount
   gcs:
     bucketName: ""
     bucketPrefix: ""
