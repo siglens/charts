@@ -115,8 +115,9 @@ config:
     ssInstanceName: "worker-node"
 
   rbac:
-    # Postgres configuration for RBAC
+    provider: "postgresql" # Valid options are: postgresql, sqlite
     dbname: db1
+    # Postgres configuration for RBAC
     host: ""
     port: 5432
     user: ""
@@ -184,5 +185,5 @@ registry:
   # Not needed for public registries. If you're using a private registry, set this to the output
   # of `cat ~/.docker/config.json | base64`.
   dockerConfigBase64: ""
-  image: ghcr.io/sigscalr/hyperion:v1.0.29-ent5
+  image: ghcr.io/sigscalr/hyperion:v1.0.31-ent1
   imagePullPolicy: Always
