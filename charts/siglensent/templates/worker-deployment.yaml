@@ -86,7 +86,7 @@ spec:
         env:
         {{- if .Values.config.s3.enabled }}
         {{- if eq .Values.config.blobStoreMode "S3" }}
-        {{- if eq .Values.config.s3.accessThrough "aws-keys" }}
+        {{- if .Values.config.s3.accessThroughAwsKeys }}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:

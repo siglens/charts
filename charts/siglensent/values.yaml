@@ -130,7 +130,7 @@ config:
     bucketName: ""
     bucketPrefix: ""
     regionName: ""
-    accessThrough: "" # aws-keys or serviceAccount
+    accessThroughAwsKeys: false # Set to true if you want to use AWS keys
   gcs:
     bucketName: ""
     bucketPrefix: ""
