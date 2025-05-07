@@ -51,6 +51,7 @@ data:
         managementCallbackUrl: {{ .Values.config.saas.githubAuth.managementCallbackUrl }}
     ingestNode: true
     queryNode: true
+    isManagementNode: true
     queryHostname: {{ .Values.queryHostWithPort }}
     ingestUrl: {{ .Values.ingestHost }}
     isRaftNode: false
