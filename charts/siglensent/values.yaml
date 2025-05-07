@@ -147,11 +147,13 @@ config:
     googleAuth:
       clientId: ""
       clientSecret: ""
-      callbackUrl: ""
+      queryCallbackUrl: ""
+      managementCallbackUrl: ""
     githubAuth:
       clientId: ""
       clientSecret: "" 
-      callbackUrl: ""
+      queryCallbackUrl: ""
+      managementCallbackUrl: ""
 
 raft:
   deployment:
