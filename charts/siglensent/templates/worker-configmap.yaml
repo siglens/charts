@@ -43,10 +43,14 @@ data:
         clientId: {{ .Values.config.saas.googleAuth.clientId }}
         clientSecret: {{ .Values.config.saas.googleAuth.clientSecret }}
         callbackUrl: {{ .Values.config.saas.googleAuth.callbackUrl }}
+        queryCallbackUrl: {{ .Values.config.saas.googleAuth.queryCallbackUrl }}
+        managementCallbackUrl: {{ .Values.config.saas.googleAuth.managementCallbackUrl }}
       githubAuth:
         clientId: {{ .Values.config.saas.githubAuth.clientId }}
         clientSecret: {{ .Values.config.saas.githubAuth.clientSecret }} 
         callbackUrl: {{ .Values.config.saas.githubAuth.callbackUrl }}
+        queryCallbackUrl: {{ .Values.config.saas.githubAuth.queryCallbackUrl }}
+        managementCallbackUrl: {{ .Values.config.saas.githubAuth.managementCallbackUrl }}
     ingestNode: true
     queryNode: true
     queryHostname: {{ .Values.queryHostWithPort }}
