@@ -11,7 +11,7 @@ cert-manager:
 queryHost: siglens.example.com
 ingestHost: ingest.siglens.example.com
 queryHostWithPort: siglens.example.com:443
-queryHost: management.siglens.example.com
+managementHost: management.siglens.example.com
 
 clusterName: siglens-enterprise
 
