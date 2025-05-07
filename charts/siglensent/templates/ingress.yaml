@@ -14,6 +14,7 @@ spec:
   - hosts:
     - {{ .Values.queryHost }}
     - {{ .Values.ingestHost }}
+    - {{ .Values.managementHost }}
     secretName: {{ .Values.ingress.tlsSecret }}
   rules:
   - host: {{ .Values.queryHost }}
@@ -36,3 +37,13 @@ spec:
             name: {{ .Release.Name }}-ingest-service
             port:
               number: {{ .Values.config.ingestPort }}
+  - host: {{ .Values.managementHost}}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-management-service
+            port:
+              number: {{ .Values.config.managementPort }}

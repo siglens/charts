@@ -11,6 +11,7 @@ cert-manager:
 queryHost: siglens.example.com
 ingestHost: ingest.siglens.example.com
 queryHostWithPort: siglens.example.com:443
+queryHost: management.siglens.example.com
 
 clusterName: siglens-enterprise
 
@@ -58,6 +59,12 @@ queryService:
   port: 5122
   targetPort: 5122
 
+managementService:
+  selector:
+    app: worker-node
+  port: 6122
+  targetPort: 6122
+
 ingress:
   tlsSecret: ingress-tls
 
@@ -99,6 +106,9 @@ config:
 
   # Address port for SigLens query server, including UI
   queryPort: 5122
+
+  # Address port for management server, including UI
+  managementPort: 6122
 
   # Location for storing local node data
   dataPath: data/
