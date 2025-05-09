@@ -154,6 +154,8 @@ config:
 
   saas:
     enabled: false # Set to true and fill in the following fields to enable SaaS
+    superadminEmail: ""
+    superadminOrgName: ""
     googleAuth:
       clientId: ""
       clientSecret: ""
