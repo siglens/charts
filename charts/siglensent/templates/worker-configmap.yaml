@@ -38,6 +38,8 @@ data:
       senderEmail: {{ .Values.config.emailConfig.senderEmail }}
       gmailAppPassword: {{ .Values.config.emailConfig.gmailAppPassword }}
     saas:
+      superadminEmail: {{ .Values.config.saas.superadminEmail }}
+      superadminOrgName:{{ .Values.config.saas.superadminOrgName }}
       enabled: {{ .Values.config.saas.enabled }}
       googleAuth:
         clientId: {{ .Values.config.saas.googleAuth.clientId }}
