@@ -152,6 +152,12 @@ config:
     senderEmail: username@domain.com
     gmailAppPassword: appPassword
 
+  oidcAuth:
+    endPoint: ""
+    clientId: ""
+    clientSecret: ""
+    callbackUrl: ""
+
   saas:
     enabled: false # Set to true and fill in the following fields to enable SaaS
     superadminEmail: ""
