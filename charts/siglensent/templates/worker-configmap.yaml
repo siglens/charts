@@ -5,58 +5,7 @@ metadata:
   namespace: {{ .Values.global.namespace }}
 data:
   server.yaml: |-
-    tls:
-      enabled: {{ .Values.config.tls.enabled }}
-      certificatePath: {{ .Values.config.tls.certificatePath }}
-      privateKeyPath: {{ .Values.config.tls.privateKeyPath }}
-    ingestPort: {{ .Values.config.ingestPort }}
-    queryPort: {{ .Values.config.queryPort }}
-    dataPath: {{ .Values.config.dataPath }}
-    timestampKey: {{ .Values.config.timestampKey }}
-    licenseKeyPath: {{ .Values.config.licenseKeyPath }}
-    ssInstanceName: {{ .Values.config.worker.ssInstanceName }}
-    blobStoreMode: {{ .Values.config.blobStoreMode }}
-    s3:
-      enabled: {{ .Values.config.s3.enabled }}
-      bucketName: {{ .Values.config.s3.bucketName }}
-      bucketPrefix: {{ .Values.config.s3.bucketPrefix }}
-      regionName: {{ .Values.config.s3.regionName }}
-    gcs:
-      bucketName: {{ .Values.config.gcs.bucketName }}
-      bucketPrefix: {{ .Values.config.gcs.bucketPrefix }}
-      regionName: {{ .Values.config.gcs.regionName }}
-    rbac:
-      provider: {{ .Values.config.rbac.provider }}
-      dbname: {{ .Values.config.rbac.dbname }}
-      host: {{ .Values.config.rbac.host }}
-      port: {{ .Values.config.rbac.port }}
-      user: {{ .Values.config.rbac.user }}
-      password: {{ .Values.config.rbac.password }}
-    emailConfig:
-      smtpHost: {{ .Values.config.emailConfig.smtpHost }}
-      smtpPort: {{ .Values.config.emailConfig.smtpPort }}
-      senderEmail: {{ .Values.config.emailConfig.senderEmail }}
-      gmailAppPassword: {{ .Values.config.emailConfig.gmailAppPassword }}
-    saas:
-      superadminEmail: {{ .Values.config.saas.superadminEmail }}
-      superadminOrgName: {{ .Values.config.saas.superadminOrgName }}
-      enabled: {{ .Values.config.saas.enabled }}
-      googleAuth:
-        clientId: {{ .Values.config.saas.googleAuth.clientId }}
-        clientSecret: {{ .Values.config.saas.googleAuth.clientSecret }}
-        queryCallbackUrl: {{ .Values.config.saas.googleAuth.queryCallbackUrl }}
-        managementCallbackUrl: {{ .Values.config.saas.googleAuth.managementCallbackUrl }}
-      githubAuth:
-        clientId: {{ .Values.config.saas.githubAuth.clientId }}
-        clientSecret: {{ .Values.config.saas.githubAuth.clientSecret }} 
-        queryCallbackUrl: {{ .Values.config.saas.githubAuth.queryCallbackUrl }}
-        managementCallbackUrl: {{ .Values.config.saas.githubAuth.managementCallbackUrl }}
-    ingestNode: true
-    queryNode: true
-    isManagementNode: true
-    queryHostname: {{ .Values.queryHostWithPort }}
-    ingestUrl: {{ .Values.ingestHost }}
-    isRaftNode: false
+    {{ toYaml .Values.config | nindent 4 }}
     raft:
       raftNodes:
 {{- $namespace := .Release.Namespace }}
