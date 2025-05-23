@@ -6,6 +6,9 @@ metadata:
 data:
   server.yaml: |-
     {{ toYaml .Values.config | nindent 4 }}
+    ingestNode: false
+    queryNode: false
+    isRaftNode: true
     raft:
       raftNodes:
 {{- $namespace := .Release.Namespace }}

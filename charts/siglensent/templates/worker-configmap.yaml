@@ -6,6 +6,12 @@ metadata:
 data:
   server.yaml: |-
     {{ toYaml .Values.config | nindent 4 }}
+    ingestNode: true
+    queryNode: true
+    isManagementNode: true
+    isRaftNode: false
+    queryHostname: {{ .Values.queryHostWithPort }}
+    ingestUrl: {{ .Values.ingestHost }}
     raft:
       raftNodes:
 {{- $namespace := .Release.Namespace }}
