@@ -5,19 +5,7 @@ metadata:
   namespace: {{ .Values.global.namespace }}
 data:
   server.yaml: |-
-    tls:
-      enabled: {{ .Values.config.tls.enabled }}
-      certificatePath: {{ .Values.config.tls.certificatePath }}
-      privateKeyPath: {{ .Values.config.tls.privateKeyPath }}
-    ingestPort: {{ .Values.config.ingestPort }}
-    queryPort: {{ .Values.config.queryPort }}
-    dataPath: {{ .Values.config.dataPath }}
-    timestampKey: {{ .Values.config.timestampKey }}
-    licenseKeyPath: {{ .Values.config.licenseKeyPath }} 
-    ssInstanceName: {{ .Values.config.raft.ssInstanceName }}
-    rbac:
-      provider: sqlite
-      dbname: db1
+    {{ toYaml .Values.config | nindent 4 }}
     ingestNode: false
     queryNode: false
     isRaftNode: true
