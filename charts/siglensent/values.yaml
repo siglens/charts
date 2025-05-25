@@ -153,6 +153,7 @@ config:
     gmailAppPassword: appPassword
 
   oidcAuth:
+    enabled: false
     endPoint: ""
     clientId: ""
     clientSecret: ""
