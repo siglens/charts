@@ -38,7 +38,6 @@ data:
       clientSecret: {{ .Values.config.oidcAuth.clientSecret }}
       endPoint: {{ .Values.config.oidcAuth.endPoint}}
       callbackUrl: {{ .Values.config.oidcAuth.callbackUrl }}
-      secretSigningKey: {{ .Values.config.oidcAuth.secretSigningKey }}
     emailConfig:
       smtpHost: {{ .Values.config.emailConfig.smtpHost }}
       smtpPort: {{ .Values.config.emailConfig.smtpPort }}

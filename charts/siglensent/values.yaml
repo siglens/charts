@@ -158,7 +158,6 @@ config:
     clientId: ""
     clientSecret: ""
     callbackUrl: ""
-    secretSigningKey: ""
 
   saas:
     enabled: false # Set to true and fill in the following fields to enable SaaS
