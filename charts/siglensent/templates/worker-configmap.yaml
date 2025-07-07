@@ -39,6 +39,8 @@ data:
       endPoint: {{ .Values.config.oidcAuth.endPoint}}
       callbackUrl: {{ .Values.config.oidcAuth.callbackUrl }}
       secretSigningKey: {{ .Values.config.oidcAuth.secretSigningKey }}
+      groupClaimName: {{ .Values.config.oidcAuth.groupClaimName }}
+      adminGroups: {{ .Values.config.oidcAuth.adminGroups }}
     emailConfig:
       smtpHost: {{ .Values.config.emailConfig.smtpHost }}
       smtpPort: {{ .Values.config.emailConfig.smtpPort }}
