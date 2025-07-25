@@ -67,8 +67,15 @@ managementService:
 
 ingress:
   tlsSecret: ingress-tls
+  # Set to empty string or different issuer name to use custom cert manager
+  certManagerIssuer: "letsencrypt"
+  # Custom annotations for the ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
 
-# If TLS is enabled, these settings are used to gererate a certificate.
+# If TLS is enabled, these settings are used to generate a certificate.
 acme:
   useProductionCertificate: true
   registrationEmail: "you@example.com"

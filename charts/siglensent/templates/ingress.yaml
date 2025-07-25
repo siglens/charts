@@ -4,18 +4,22 @@ metadata:
   name: ingress
   namespace: {{ .Values.global.namespace }}
   annotations:
-    cert-manager.io/issuer: "letsencrypt"
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    {{- if and .Values.config.tls.enabled .Values.ingress.certManagerIssuer }}
+    cert-manager.io/issuer: "{{ .Values.ingress.certManagerIssuer }}"
+    {{- end }}
+    {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
 spec:
   ingressClassName: nginx
+  {{- if .Values.config.tls.enabled }}
   tls:
   - hosts:
     - {{ .Values.queryHost }}
     - {{ .Values.ingestHost }}
     - {{ .Values.managementHost }}
     secretName: {{ .Values.ingress.tlsSecret }}
+  {{- end }}
   rules:
   - host: {{ .Values.queryHost }}
     http:
