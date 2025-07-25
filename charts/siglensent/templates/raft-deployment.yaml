@@ -28,7 +28,8 @@ spec:
       serviceAccountName: {{ .Release.Name }}-service-account
       initContainers:
       - name: volume-permissions
-        image: busybox
+        image: {{ .Values.initContainer.image }}
+        imagePullPolicy: {{ .Values.initContainer.imagePullPolicy }}
         command: ['sh', '-c', 'chown -R 1000:1000 /siglens/data']
         volumeMounts:
         - name: data-volume
