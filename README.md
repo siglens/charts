@@ -177,7 +177,88 @@ siglens:
 <details>
 <summary><strong>EKS Cluster Setup</strong></summary>
 
-*Coming soon - EKS setup instructions will be added here*
+### Prerequisites
+
+**Install kubectl:**
+- kubectl: https://kubernetes.io/docs/tasks/tools/install-kubectl-macos/
+
+**Install AWS CLI:**
+- AWS CLI: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+- Configure AWS credentials: `aws configure`
+
+### How to Create an EKS Cluster
+
+1. Begin setting up a new EKS cluster on the AWS console
+   - Use "Custom Configuration"
+   - Disable EKS Auto Mode
+   - Name the cluster
+   - Click "Create recommended role" to create the Cluster IAM role. Leave the default settings, and assign your new role
+
+2. Continue using the default settings for the next few pages. Stop when you get to the Select Add-ons page
+
+3. Use these add-ons:
+   - CoreDNS
+   - Kube-proxy
+   - Amazon VPC CNI
+   - Amazon EBS CSI Driver
+   - Amazon EKS Pod Identity Agent
+
+4. For the VPC CNI and EBS CSI add-ons, click "Create recommended role", keep the defaults, and then add that IAM role to the add-on
+
+5. Click Next and create the cluster
+
+6. Wait for the cluster to finish getting created
+
+7. Go to the Compute tab in your cluster and click "Add node group"
+
+8. Name the node group, and use "Create recommended role" to create a new role and assign it
+
+9. Click next
+
+10. Select the desired instance type and min/max/desired nodes
+
+11. Leave the rest of the settings at their default, and create the node group
+
+12. Wait until the node group is Active
+
+### Connect to Your Cluster
+
+Connect to your cluster using the AWS CLI:
+```bash
+aws eks update-kubeconfig --region <region> --name <cluster-name>
+```
+
+### Setup Service Account IAM Permissions (Optional)
+
+This step is optional. If you won't configure SigLens to run with S3, then you don't need this step. If you want to give S3 permissions via an AWS access key and secret access key, you can skip this step.
+
+1. Get the OpenID Connect provider URL on the Overview tab of your EKS cluster
+
+2. Go to IAM → Identity Providers → Add provider
+
+3. Configure the provider:
+   - Use OpenID Connect
+   - Paste your OpenID URL as the Provider URL
+   - Use `sts.amazonaws.com` as the Audience
+
+4. Go to IAM → Roles → Create role. Configure the role:
+   - Use Web identity
+   - Use your newly created Identity Provider as the identity provider
+   - Use `sts.amazonaws.com` as the Audience
+   - Click Add Condition
+   - Use `<IDENTITY_PROVIDER>:sub` as the Key
+   - Use StringEquals as the Condition
+   - Use `system:serviceaccount:<NAMESPACE>:<RELEASE_NAME>-service-account` as the Value
+     - The namespace is the namespace you'll install the helm chart into. It will be "siglensent" unless you change it in the values.yaml config file
+     - The release name is what you'll install the chart with helm as. It will be "siglensent" unless you change it
+
+5. Click Next
+
+6. Add S3 full access permissions
+
+7. Click Next
+
+8. Name the role, add an optional description, and click Create Role
 
 </details>
 
