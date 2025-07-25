@@ -101,6 +101,86 @@ siglens:
 
 # Siglensent
 
+## Cluster Setup
+
+<details>
+<summary><strong>GKE Cluster Setup</strong></summary>
+
+### Prerequisites
+
+**Install kubectx/kubectl:**
+1. kubectl: https://kubernetes.io/docs/tasks/tools/install-kubectl-macos/
+2. kubectx: https://github.com/ahmetb/kubectx
+
+**Install Auth Plugin:**
+1. Install gke-gcloud-auth-plugin
+   - `brew install google-cloud-sdk`
+   - See https://stackoverflow.com/a/74733176/16662168 if you have issues
+   - `gcloud components install gke-gcloud-auth-plugin`
+2. Run `gke-gcloud-auth-plugin --version` to verify it's installed
+
+**Get Permissions:**
+1. Go to the IAM page: https://console.cloud.google.com/iam-admin
+2. Add these permissions for yourself if you don't have them:
+   - Kubernetes Engine Admin
+   - Kubernetes Engine Cluster Admin
+
+### How to Create a GKE Cluster
+
+1. Go to the GKE page: https://console.cloud.google.com/kubernetes
+2. Click Create, and choose the Standard option
+3. For the region, you should select the same region that you want the GCS bucket in, although it will still work if the GKE cluster and the GCS bucket are in different regions
+4. Use Standard Tier
+5. In the Node Pools → default-pool tab, set the number of nodes per zone
+6. In the Nodes tab for the default-pool, choose an instance type with enough CPU/RAM, and configure the amount of disk space
+7. Click Create (you don't need to alter the options in the other tabs)
+8. On the main GKE page, click your cluster to go to the page for it
+9. On the top, click Connect
+10. Copy the Command Line Access command, and run it
+11. In terminal, run `kubectx` to verify you're on your new cluster (if you have multiple clusters, it highlights the one you're on)
+12. Wait for the cluster to finish getting set up
+
+### Create a Service Account
+
+**Note:** If you don't create the Service Account with the correct roles, I'm not sure how to update the roles; so you may need to make a new Service Account with the proper roles.
+
+1. Go to the IAM page: https://console.cloud.google.com/iam-admin
+2. Click the Service Accounts tab
+3. Click Create Service Account
+4. Set the name, then click Create and Continue
+5. Add these roles:
+   - Storage Admin
+   - Storage Object Admin
+   
+   **Note:** There are several other roles similar to these, but when I tried those, they didn't give me enough permissions.
+6. Click Done
+
+### Use your Service Account
+
+**Note:** If you're repeating this step on your cluster, first run `kubectl delete secrets gcs-key`. You might also want to delete any old keys in your Downloads folder.
+
+1. Run `kubectl create namespace siglensent`
+2. (Optional) Run `kubectl config set-context --current --namespace=siglensent` to make siglensent your default namespace (kubectl only searches in your default namespace unless you specify a different namespace, or specify to search all namespaces)
+3. On the Service Accounts page, click your new Service Account
+4. Go to the Keys tab
+5. Click Add Key → Create New Key
+6. Select the JSON key, and click Create to download it
+7. In the terminal, run the following. Make sure to use the absolute path to your key:
+   ```bash
+   kubectl create secret generic gcs-key \
+   --from-file=key.json=/path/to/your-key.json \
+   --namespace=siglensent
+   ```
+
+</details>
+
+<details>
+<summary><strong>EKS Cluster Setup</strong></summary>
+
+*Coming soon - EKS setup instructions will be added here*
+
+</details>
+
 ## Installation
 
 1. **Prepare Configuration**:
